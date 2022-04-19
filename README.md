@@ -11,3 +11,5 @@ https://math.bme.hu/~pitrik/2021_22_2/A2_tav_9het.pdf
 https://en.wikipedia.org/wiki/QR_decomposition#Computing_the_QR_decomposition
 
 https://hu.wikipedia.org/wiki/Legkisebb_n%C3%A9gyzetek_m%C3%B3dszere
+
+https://www.youtube.com/watch?v=FAnNBw7d0vg
