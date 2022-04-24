@@ -26,8 +26,8 @@ PointVector::PointVector(const char* fName) : length(0) {
 				vector.push_back(tempx);
 				// ha páratlan adatmennyiség van, kell hibakezelés
 				if (inputFile.eof())
-					throw std::runtime_error("Odd amount of numbers, unusable file!");
-
+					throw std::runtime_error("Odd amount of numbers or empty lines, unusable file!");
+				// akkor is ezt a hibát dobja, ha kettõnél több enter van a fájl végén
 				inputFile >> tempy;
 				vector.push_back(tempy);
 				length++;
@@ -63,7 +63,7 @@ void PointVector::setLength(unsigned length)
 	this->length = length;
 }
 
-double PointVector::operator()(unsigned index, char axis) const
+double PointVector::operator()(unsigned index, char axis) const // esetleg lehet bool axis, de az elég aljas hibakezelés-kikerülés
 {
 	try {
 		if (index > length - 1)
@@ -103,6 +103,8 @@ PointVector::~PointVector()
 {
 	// vektor kezeli a saját memóriáját, nem kell felszabadítani?
 }
+
+
 
 
 
