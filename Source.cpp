@@ -21,7 +21,18 @@ void testMatrix(const PointVector& points) {
 	eno.print();
 	Matrix m1;
 	m1.makeIdentity(5);
-	m1.print();
+	 m1.print();
+	Matrix m2;
+	m2.makeIdentity(5);
+	Matrix m3 = m1 + m2;
+	Matrix m4 = m1 - m2;
+	Matrix m5 = m1 * m2;
+	Matrix m6 = m1 * 3.0;
+	m3.print();
+	m4.print();
+	m5.print();
+	m6.print();
+	//TODO szorzás részletes tesztelése
 
 
 }
