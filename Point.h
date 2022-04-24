@@ -23,5 +23,6 @@ public:
 	
 	~PointVector();	// vektor kezeli a saját memóriáját, nem kell felszabadítani?
 
+
 };
 
