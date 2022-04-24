@@ -17,11 +17,15 @@ public:
 
 	unsigned getRows() const;
 	unsigned getColumns() const;
+	// identitásmátrix létrehozása
+	void makeIdentity(unsigned size);
+	// méret, és ezzel az STL tároló által foglalandó memória beállítása
+	void setSize(unsigned rows=0, unsigned columns=0);
+	// mátrix kiürítése
+	void empty();
+	// mátrix feltöltése az egyenletrendszernek megfelelõ módon
+	void fillFromPointVector(const PointVector& points, const std::vector<int>& function);
 
-	void makeIdentity(unsigned size);	// identitásmátrix létrehozása
-	void setSize(unsigned rows=0, unsigned columns=0); // méret, és ezzel az STL tároló által foglalandó memória beállítása
-	void empty();					// mátrix kiürítése
-	void fillFromPointVector(const PointVector& points, const std::vector<int>& function); // mátrix feltöltése az egyenletrendszernek megfelelõ módon
 
 	void print() const;
 
@@ -32,10 +36,12 @@ public:
 	Matrix operator-(const Matrix& other) const;
 	Matrix operator*(const Matrix& other) const;
 	Matrix operator*(double times) const;
-
-	void transpose();		// transzponálás ( mátrix sor-oszlop csere)
-	void inverse();			// inverz számolás
-
-	double determinant() const;		// determináns számolás
+	Matrix& operator=(const Matrix& other);
+	// transzponálás ( mátrix sor-oszlop csere)
+	void transpose();	
+	// inverz számolás
+	Matrix inverse();			
+	// determináns számolás
+	double determinant() const;		
 
 };

@@ -6,8 +6,7 @@ Matrix::Matrix(unsigned rows, unsigned columns)
 }
 
 Matrix::Matrix(const Matrix& other) {
-	setSize(other.rows, other.columns);
-	this->data = other.data;
+	*this = other;
 }
 
 Matrix::~Matrix() {};
@@ -47,13 +46,89 @@ double& Matrix::operator()(unsigned row, unsigned column) {
 	return data.at(row * columns + column);
 }
 
+Matrix Matrix::operator+(const Matrix& other) const
+{
+	Matrix result;
+	if (this->rows != other.rows || this->columns != other.columns)
+		; //TODO hibakezelés
+	result.setSize(rows, columns);
+	for (unsigned i = 0; i < rows; i++)
+	{
+		for (unsigned j = 0; j < columns; j++)
+			result(i, j) = (*this)(i, j) + other(i, j);
+	}
+	return result;
+}
+
+Matrix Matrix::operator-(const Matrix& other) const
+{
+	Matrix result;
+	if (this->rows != other.rows || this->columns != other.columns)
+		; //TODO hibakezelés
+	result.setSize(rows, columns);
+	for (unsigned i = 0; i < rows; i++)
+	{
+		for (unsigned j = 0; j < columns; j++)
+			result(i, j) = (*this)(i, j) - other(i, j);
+	}
+	return result;
+}
+
+Matrix Matrix::operator*(const Matrix& other) const
+{
+	Matrix result;
+	if (this->columns != other.rows)
+		; //TODO hibakezelés
+	result.setSize(this->rows, other.columns);
+	for (unsigned i = 0; i < this->rows; i++) {
+		for (unsigned j = 0; j < other.columns; j++) {
+			result(i, j) = 0;
+			for (unsigned k = 0; k < this->columns; k++) {
+				result(i, j) += (*this)(i, k) * other(k, j);
+			}
+		}
+	}
+	return result;
+}
+
+Matrix Matrix::operator*(double times) const
+{
+	Matrix result;
+	result.setSize(rows, columns);
+	for (unsigned i = 0; i < rows; i++)
+	{
+		for (unsigned j = 0; j < columns; j++)
+			result(i, j) = (*this)(i, j) * times;
+	}
+	return result;
+}
+
+Matrix& Matrix::operator=(const Matrix& other)
+{
+	setSize(other.rows, other.columns);
+	this->data = other.data;
+	return (*this);
+}
+
+void Matrix::transpose()
+{
+	Matrix tmp;
+	tmp.setSize(columns, rows);
+	for (unsigned i = 0; i < rows; i++)
+		for (unsigned j = 0; j < columns; j++)
+			tmp(j, i) = (*this)(i, j);
+	*this = tmp;
+	tmp.~Matrix();
+}
+
 void Matrix::print() const {
 	for (unsigned i = 0; i < rows; i++)
 	{
 		for (unsigned j = 0; j < columns; j++)
-			std::cout << this->operator()(i, j) << '\t';
+			std::cout << (*this)(i, j) << '\t';
 		std::cout << std::endl;
 	}
+	std::cout << std::endl;
 }
 
 void Matrix::fillFromPointVector(const PointVector& points, const std::vector<int>& function)
@@ -62,7 +137,7 @@ void Matrix::fillFromPointVector(const PointVector& points, const std::vector<in
 	setSize(points.getLength(), function.size());
 	for (unsigned i = 0; i < rows; i++) {
 		for (unsigned j = 0; j < columns; j++) {
-			this->operator()(i,j) = pow(points(i, 'x'), function.at(j));
+			(*this)(i,j) = pow(points(i, 'x'), function.at(j));
 		}
 	}
 }
@@ -73,8 +148,9 @@ void Matrix::makeIdentity(unsigned size) {
 	{
 		for (unsigned j = 0; j < size; j++)
 			if(i==j)
-				this->operator()(i, j) = 1;
+				(*this)(i, j) = 1;
 			else
-				this->operator()(i, j) = 0;
+				(*this)(i, j) = 0;
 	}
 }
+
