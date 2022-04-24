@@ -37,4 +37,5 @@ public:
 	void inverse();			// inverz számolás
 
 	double determinant() const;		// determináns számolás
+
 };
