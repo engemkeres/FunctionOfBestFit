@@ -33,6 +33,17 @@ void testMatrix(const PointVector& points) {
 	m5.print();
 	m6.print();
 	//TODO szorzás részletes tesztelése
+	Matrix m7(4, 4);
+	unsigned k = 0;
+	for (unsigned i = 0; i < 4; i++)
+		for (unsigned j = 0; j < 4; j++, k++)
+			m7(i, j) = k;
+	m7.print();
+	Matrix m9;
+	m9.makeIdentity(4);
+	Matrix m8 = m7 * m9;
+	m8.print();
+
 
 
 }

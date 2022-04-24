@@ -78,7 +78,7 @@ Matrix Matrix::operator*(const Matrix& other) const
 {
 	Matrix result;
 	if (this->columns != other.rows)
-		; //TODO hibakezelés
+		std::exit(6); //TODO hibakezelés
 	result.setSize(this->rows, other.columns);
 	for (unsigned i = 0; i < this->rows; i++) {
 		for (unsigned j = 0; j < other.columns; j++) {
