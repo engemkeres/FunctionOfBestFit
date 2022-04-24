@@ -23,6 +23,7 @@ void testMatrix(const PointVector& points) {
 	m1.makeIdentity(5);
 	m1.print();
 
+
 }
 
 int main(int argc, char** argv) { //F
