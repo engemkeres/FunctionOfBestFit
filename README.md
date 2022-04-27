@@ -10,8 +10,8 @@ A program parancssori argumentumként megkapja a feldolgozandó fájl nevét, me
 
 A parancssorra kiírja a program a kiválasztott függvénytípusnak egy specifikus képletet, mely grafikonja a lehető legjobban illeszkedik a megadott ponthalmazra.
 ### Implementálandó funkciók
-*	Mátrix osztály működő aritmetikával (szorzás, transzponálás, invertálás)
-* Egyenletrendszer megoldása QR felbontással
+*	Mátrix és Vektor osztály működő aritmetikával (szorzás, transzponálás, invertálás)
+* Mátrix QR felbontás képzése Householder módszerrel/Gram-Schmidt ortogonalizációval
 * Minimális hiba keresésre legkisebb négyzetek módszerével
 
 ### Felhasználói interakció
@@ -40,3 +40,7 @@ https://en.wikipedia.org/wiki/QR_decomposition#Computing_the_QR_decomposition
 https://hu.wikipedia.org/wiki/Legkisebb_n%C3%A9gyzetek_m%C3%B3dszere
 
 https://www.youtube.com/watch?v=FAnNBw7d0vg
+
+https://people.inf.elte.hu/hozsaai/3_felev/Nummod1/Locsi-esti-ea-dia/nummod1esti_ea05.pdf
+
+https://www.eltereader.hu/media/2013/06/Numerikus_modszerek_peldatar_opt.pdf
