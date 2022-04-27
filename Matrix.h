@@ -2,6 +2,7 @@
 #include <iostream>
 #include <vector>
 #include "Point.h"
+#include "Vector.h"
 #include <math.h>
 
 class Matrix
@@ -24,9 +25,17 @@ public:
 	// mátrix kiürítése
 	void empty();
 	// mátrix feltöltése az egyenletrendszernek megfelelõ módon
-	void fillFromPointVector(const PointVector& points, const std::vector<int>& function);
-
-
+	void fillFromPointVector(const PointVector& points, const std::vector<int>& function); // helyettesíteni kéne egy fillCoordinateMatrix függvénnyel, amivel a Point osztály elhagyhatom
+	void fillFromArray(unsigned rows, unsigned columns, double* dataArray);
+	
+	
+	Matrix extractColumn(unsigned columnindex) const;
+	//Matrix extractRow(unsigned rowindex) const; - nem fog kelleni valószínûleg
+	
+	//Vektorokkal dolgozó, de mátrixra hívandó függvények
+	Matrix& fillWithVector(const Matrix& other);
+	Matrix crossProduct(const Vector& v1, const Vector& v2);
+	
 	void print() const;
 
 
@@ -40,8 +49,6 @@ public:
 	// transzponálás ( mátrix sor-oszlop csere)
 	void transpose();	
 	// inverz számolás
-	Matrix inverse();			
-	// determináns számolás
-	double determinant() const;		
+	Matrix UpperTriangleInverse();	
 
 };

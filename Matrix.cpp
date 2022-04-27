@@ -21,7 +21,7 @@ unsigned Matrix::getColumns() const {
 
 void Matrix::setSize(unsigned rows, unsigned columns) {
 	if ((rows == 0 && columns == 0) || (this->rows == rows && this->columns == columns))
-		;// todo hibakezelés, csak akkor kerül beállításra, ha eltér az alapértelmezettõl, vagy a jelenlegitõl
+		std::exit(11);// todo hibakezelés, csak akkor kerül beállításra, ha eltér az alapértelmezettõl, vagy a jelenlegitõl
 	this->rows = rows;
 	this->columns = columns;
 	this->data.resize(rows * columns);
@@ -50,7 +50,7 @@ Matrix Matrix::operator+(const Matrix& other) const
 {
 	Matrix result;
 	if (this->rows != other.rows || this->columns != other.columns)
-		; //TODO hibakezelés
+		std::exit(10); //TODO hibakezelés
 	result.setSize(rows, columns);
 	for (unsigned i = 0; i < rows; i++)
 	{
@@ -64,7 +64,7 @@ Matrix Matrix::operator-(const Matrix& other) const
 {
 	Matrix result;
 	if (this->rows != other.rows || this->columns != other.columns)
-		; //TODO hibakezelés
+		std::exit(9); //TODO hibakezelés
 	result.setSize(rows, columns);
 	for (unsigned i = 0; i < rows; i++)
 	{
@@ -142,6 +142,16 @@ void Matrix::fillFromPointVector(const PointVector& points, const std::vector<in
 	}
 }
 
+void Matrix::fillFromArray(unsigned rows, unsigned columns, double* dataArray)	// TODO kinek a felelõssége jó indexet megadni? - meghívó, oda kell majd a catch
+{
+	empty();
+	setSize(rows, columns);
+	unsigned k=0;
+	for (unsigned i = 0; i < rows; i++)
+		for (unsigned j = 0; j < rows; j++, k++)
+			(*this)(i, j) = dataArray[k];
+}
+
 void Matrix::makeIdentity(unsigned size) {
 	setSize(size,size);
 	for (unsigned i = 0; i < size; i++)
@@ -154,3 +164,11 @@ void Matrix::makeIdentity(unsigned size) {
 	}
 }
 
+Matrix Matrix::extractColumn(unsigned columnindex) const {
+	if (columnindex > columns - 1)
+		std::exit(11); //TODO hibakezelés túl nagy index esetén
+	Matrix result(rows, 1);
+	for (unsigned i = 0; i < rows; i++)
+		result(i, 0) = (*this)(i, columnindex);
+	return result;
+}
