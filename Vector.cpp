@@ -20,8 +20,6 @@ unsigned Vector::getSize() const
 
 void Vector::setSize(unsigned size)
 {
-	if (size == 0 || this->size == size)
-		std::exit(12); //TODO hibakezelés
 	this->size = size;
 	this->data.resize(size);
 }
