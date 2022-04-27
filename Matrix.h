@@ -32,11 +32,11 @@ public:
 	
 	void fillFromArray(unsigned rows, unsigned columns, double* dataArray);
 	
-	Vector extractColumn(unsigned columnindex) const;
-	//Matrix extractRow(unsigned rowindex) const; - nem fog kelleni valószínûleg
 	
 	//Vektorokkal dolgozó, de mátrixra hívandó függvények
-	Matrix& fillWithVector(const Matrix& other);
+	//Matrix extractRow(unsigned rowindex) const; - nem fog kelleni valószínûleg
+	Matrix& pushVector(const Vector& other);
+	Vector extractColumn(unsigned columnindex) const;
 	
 	void print() const;
 

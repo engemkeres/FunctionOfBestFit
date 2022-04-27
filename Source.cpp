@@ -8,6 +8,14 @@
 void testMatrix2(const char* fName) {
 	Matrix m1(fName);
 	m1.print();
+	Matrix m2;
+	double varray[] = { 1,2,3,4,5,6,7,8 };
+	m2.fillFromArray(4, 2, varray);
+	m2.print();
+	Vector v3 = m2.extractColumn(0);
+	v3.print();
+	m2.pushVector(v3);
+	m2.print();
 }
 
 int main(int argc, char** argv) { //F

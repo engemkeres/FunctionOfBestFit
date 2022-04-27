@@ -54,8 +54,6 @@ unsigned Matrix::getColumns() const {
 }
 
 void Matrix::setSize(unsigned rows, unsigned columns) {
-	if ((rows == 0 && columns == 0) || (this->rows == rows && this->columns == columns))
-		std::exit(11);// todo hibakezelés, csak akkor kerül beállításra, ha eltér az alapértelmezettõl, vagy a jelenlegitõl
 	this->rows = rows;
 	this->columns = columns;
 	this->data.resize(rows * columns);
@@ -168,6 +166,22 @@ void Matrix::transpose()
 	*this = tmp;
 }
 
+Matrix& Matrix::pushVector(const Vector& other)
+{
+	if (rows == 0 && columns == 0)
+		(*this).setSize(other.getSize(), 0);
+	if (rows != other.getSize() )
+		std::exit(16); //TODO hibakezelés
+	Matrix temp(rows, columns + 1);
+	for (unsigned i = 0; i < rows; i++) {
+		for (unsigned j = 0; j < columns; j++)
+			temp(i, j) = (*this)(i, j);
+		temp(i, columns) = other(i);
+	}
+	(*this) = temp;
+	return (*this);
+}
+
 void Matrix::print() const {
 	for (unsigned i = 0; i < rows; i++)
 	{
@@ -195,7 +209,7 @@ void Matrix::fillFromArray(unsigned rows, unsigned columns, double* dataArray)	/
 	setSize(rows, columns);
 	unsigned k=0;
 	for (unsigned i = 0; i < rows; i++)
-		for (unsigned j = 0; j < rows; j++, k++)
+		for (unsigned j = 0; j < columns; j++, k++)
 			(*this)(i, j) = dataArray[k];
 }
 
