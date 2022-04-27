@@ -2,7 +2,6 @@
 #include <iostream>
 #include <vector>
 #include <fstream>
-#include <assert.h>
 
 class PointVector // érdemes lenne template-tel csinálni, hogy intként és double/floatként is lehessen pontokat tárolni?
 {

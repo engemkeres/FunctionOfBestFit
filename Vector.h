@@ -20,6 +20,7 @@ public:
 	void empty();
 	double length() const;	// vektor hossza
 	void normalize();	// vektor egységhosszúvá tétele
+	void fill(double num);
 
 	void print() const;
 
@@ -31,7 +32,6 @@ public:
 	// vektoriális szorzás eredménye mátrix, az a mátrix osztályban legyen definiálva
 	Vector operator*(double times) const;
 	Vector& operator=(const Vector& other);
-
 
 };
 

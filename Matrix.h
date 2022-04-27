@@ -1,9 +1,10 @@
 #pragma once
 #include <iostream>
 #include <vector>
-#include "Point.h"
+//#include "Point.h"
 #include "Vector.h"
 #include <math.h>
+#include <fstream>
 
 class Matrix
 {
@@ -14,6 +15,7 @@ private:
 public:
 	Matrix(unsigned rows=0, unsigned columns=0);
 	Matrix(const Matrix& other);
+	Matrix(const char* fName);
 	~Matrix();
 
 	unsigned getRows() const;
@@ -25,16 +27,16 @@ public:
 	// mátrix kiürítése
 	void empty();
 	// mátrix feltöltése az egyenletrendszernek megfelelõ módon
-	void fillFromPointVector(const PointVector& points, const std::vector<int>& function); // helyettesíteni kéne egy fillCoordinateMatrix függvénnyel, amivel a Point osztály elhagyhatom
+
+	//void fillFromPointVector(const PointVector& points, const std::vector<int>& function); // helyettesíteni kéne egy fájlból olvasó konstruktorral függvénnyel, amivel a Point osztály elhagyhatom
+	
 	void fillFromArray(unsigned rows, unsigned columns, double* dataArray);
 	
-	
-	Matrix extractColumn(unsigned columnindex) const;
+	Vector extractColumn(unsigned columnindex) const;
 	//Matrix extractRow(unsigned rowindex) const; - nem fog kelleni valószínûleg
 	
 	//Vektorokkal dolgozó, de mátrixra hívandó függvények
 	Matrix& fillWithVector(const Matrix& other);
-	Matrix crossProduct(const Vector& v1, const Vector& v2);
 	
 	void print() const;
 
@@ -44,6 +46,7 @@ public:
 	Matrix operator+(const Matrix& other) const;
 	Matrix operator-(const Matrix& other) const;
 	Matrix operator*(const Matrix& other) const;
+	Vector operator*(const Vector& other) const;
 	Matrix operator*(double times) const;
 	Matrix& operator=(const Matrix& other);
 	// transzponálás ( mátrix sor-oszlop csere)

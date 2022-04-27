@@ -9,6 +9,40 @@ Matrix::Matrix(const Matrix& other) {
 	*this = other;
 }
 
+Matrix::Matrix(const char* fName) : rows(0), columns(2)
+{
+	std::ifstream inputFile;
+	double temp;
+	try {
+		inputFile.open(fName);
+		if (inputFile.is_open())
+		{
+			while (true) {
+				inputFile >> temp;
+				data.push_back(temp);
+				// ha páratlan adatmennyiség, kell hibakezelés
+				if (inputFile.eof())
+					throw std::runtime_error("Odd amount of numbers or empty lines, unusable file!");
+				// akkor is ezt a hibát dobja, ha kettõnél több enter van a fájl végén
+				inputFile >> temp;
+				data.push_back(temp);
+				rows++;
+				if (inputFile.eof())
+					break;
+			}
+			inputFile.close();
+		}
+		else
+			throw std::runtime_error("File cannot be found!");
+	}
+	catch (const std::runtime_error& e) {
+		std::cerr << "exception: " << e.what() << std::endl;
+		std::cerr << "Terminating program.";
+		std::exit(1);
+	}
+	// ha nem nyílik meg a fájl, hibakezelés - jelenleg leáll a program, ha ebbe ütközik
+}
+
 Matrix::~Matrix() {};
 
 unsigned Matrix::getRows() const {
@@ -76,9 +110,9 @@ Matrix Matrix::operator-(const Matrix& other) const
 
 Matrix Matrix::operator*(const Matrix& other) const
 {
-	Matrix result;
 	if (this->columns != other.rows)
 		std::exit(6); //TODO hibakezelés
+	Matrix result;
 	result.setSize(this->rows, other.columns);
 	for (unsigned i = 0; i < this->rows; i++) {
 		for (unsigned j = 0; j < other.columns; j++) {
@@ -89,6 +123,20 @@ Matrix Matrix::operator*(const Matrix& other) const
 		}
 	}
 	return result;
+}
+
+Vector Matrix::operator*(const Vector& other) const
+{
+	if (this->columns != other.getSize())
+		std::exit(16); //TODO hibakezelés
+	Vector result;
+	result.setSize(rows);
+	result.fill(0);
+	for (unsigned i = 0; i < rows;i++)
+		for (unsigned j = 0; j < columns; j++)
+			result(i) += (*this)(i, j) * other(j);
+	return result;
+		
 }
 
 Matrix Matrix::operator*(double times) const
@@ -118,7 +166,6 @@ void Matrix::transpose()
 		for (unsigned j = 0; j < columns; j++)
 			tmp(j, i) = (*this)(i, j);
 	*this = tmp;
-	tmp.~Matrix();
 }
 
 void Matrix::print() const {
@@ -131,16 +178,16 @@ void Matrix::print() const {
 	std::cout << std::endl;
 }
 
-void Matrix::fillFromPointVector(const PointVector& points, const std::vector<int>& function)
-{
-	empty();
-	setSize(points.getLength(), function.size());
-	for (unsigned i = 0; i < rows; i++) {
-		for (unsigned j = 0; j < columns; j++) {
-			(*this)(i,j) = pow(points(i, 'x'), function.at(j));
-		}
-	}
-}
+//void Matrix::fillFromPointVector(const PointVector& points, const std::vector<int>& function)
+//{
+//	empty();
+//	setSize(points.getLength(), function.size());
+//	for (unsigned i = 0; i < rows; i++) {
+//		for (unsigned j = 0; j < columns; j++) {
+//			(*this)(i,j) = pow(points(i, 'x'), function.at(j));
+//		}
+//	}
+//}
 
 void Matrix::fillFromArray(unsigned rows, unsigned columns, double* dataArray)	// TODO kinek a felelõssége jó indexet megadni? - meghívó, oda kell majd a catch
 {
@@ -164,11 +211,12 @@ void Matrix::makeIdentity(unsigned size) {
 	}
 }
 
-Matrix Matrix::extractColumn(unsigned columnindex) const {
+Vector Matrix::extractColumn(unsigned columnindex) const {
 	if (columnindex > columns - 1)
 		std::exit(11); //TODO hibakezelés túl nagy index esetén
-	Matrix result(rows, 1);
+	Vector result;
+	result.setSize(rows);
 	for (unsigned i = 0; i < rows; i++)
-		result(i, 0) = (*this)(i, columnindex);
+		result(i) = (*this)(i, columnindex);
 	return result;
 }

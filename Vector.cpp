@@ -48,6 +48,11 @@ void Vector::normalize()
 		(*this)(i) /= length; // el kell tárolni a vektor hosszát, mert különben folyton változna a hossza
 }
 
+void Vector::fill(double num)
+{
+	std::fill(data.begin(), data.end(), num);
+}
+
 void Vector::print() const
 {
 	for (unsigned i = 0; i < size; i++)
