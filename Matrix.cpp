@@ -294,6 +294,18 @@ Matrix Matrix::makeLeastSquaresMatrix(std::vector<unsigned> function) const {
 	return result;
 }
 
+Matrix Matrix::invertUpperTriangleSquare() const {
+	Matrix inverse(columns,columns);
+	for (unsigned i = 0; i < columns; i++)
+		for (unsigned j = 0; j < columns; j++)
+			inverse(i, j) = 0;
+	// nem mûködik, több dolog mûködõképesnek tûnik
+	// TODO invertálás, ezen kívül már minden mûködõképesnek tûnik
+	
+	inverse.print();
+	return inverse;
+}
+
 Vector Matrix::SolveUpperTriangle(const Vector& other) const {
 	if (columns > rows)
 		std::exit(19);//TODO hibakezelés, nincs megoldás, több pont kéne: megadott fokszámokkal legalább egyezzen meg a pontok száma, de inkább legyen több, jóval több
@@ -307,7 +319,9 @@ Vector Matrix::SolveUpperTriangle(const Vector& other) const {
 			Rsquare(i, j) = (*this)(i, j);
 		b(i) = other(i);
 	}
-
+	//TODO felsõ háromszög négyzetes mátrix invertálása
+	Matrix inverseRSquare = Rsquare.invertUpperTriangleSquare();
+	return inverseRSquare * b;
 }
 
 Vector Matrix::SolveLeastSquaresProblem(std::vector<unsigned> function) const {
