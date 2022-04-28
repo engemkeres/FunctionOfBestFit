@@ -23,7 +23,7 @@ void testMatrix3() {
 	double varray[] = { 1,-2,1,-1,1,0,1,2,1,3 };
 	m1.fillFromArray(5, 2, varray);
 	m1.print();
-	m1.HouseholderSolve();
+	m1.HouseholderOrthogonalize();
 }
 
 int main(int argc, char** argv) { //F

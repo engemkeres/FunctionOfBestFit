@@ -35,9 +35,9 @@ public:
 	
 	//Vektorokkal dolgozó, de mátrixra hívandó függvények
 	//Matrix extractRow(unsigned rowindex) const; - nem fog kelleni valószínûleg
-	Matrix& pushVector(const Vector& other);
+	void pushVector(const Vector& other);
 	Vector extractColumn(unsigned columnindex) const;
-	void vectorToMatrix(const Vector& other);
+	//void vectorToMatrix(const Vector& other);
 	
 	void print() const;
 
@@ -50,9 +50,9 @@ public:
 	Vector operator*(const Vector& other) const;
 	Matrix operator*(double times) const;
 	Matrix& operator=(const Matrix& other);
+	void outerProduct(const Vector& other);
 	// transzponálás ( mátrix sor-oszlop csere)
 	void transpose();	
 	// inverz számolás
-	Vector HouseholderSolve(); //desktruktív, elrontja a mátrixot
-
+	Matrix HouseholderOrthogonalize() const; // Q mátrixot adja vissza, melybõl a meghívó mátrix segítségével R megkapható
 };

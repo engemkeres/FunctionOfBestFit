@@ -51,6 +51,16 @@ void Vector::fill(double num)
 	std::fill(data.begin(), data.end(), num);
 }
 
+void Vector::makeCanonicBase(unsigned size)
+{
+	setSize(size);
+	(*this)(0) = 1;
+	for (unsigned i = 1; i < size; i++)
+	{
+		(*this)(i) = 0;
+	}
+}
+
 void Vector::print() const
 {
 	for (unsigned i = 0; i < size; i++)

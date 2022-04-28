@@ -21,7 +21,7 @@ public:
 	double length() const;	// vektor hossza
 	void normalize();	// vektor egységhosszúvá tétele
 	void fill(double num);
-
+	void makeCanonicBase(unsigned size);
 	void print() const;
 
 	double operator()(unsigned index) const;
