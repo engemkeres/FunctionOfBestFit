@@ -273,11 +273,12 @@ Matrix Matrix::HouseholderOrthogonalize() const {
 		A = subH;
 	}
 	Matrix finalQ;
-	finalQ.makeIdentity(rows);
+	finalQ.makeIdentity(rows);													//Q=Q1T*Q2T*...*QNT
 	for (unsigned i = 0; i < howManyIterations; i++) {
-		finalQ.transpose();
-		QforEveryStep.at(howManyIterations - 1 - i).transpose();
-		finalQ = QforEveryStep.at(howManyIterations - 1 - i) * finalQ;
+		//finalQ.transpose();
+		//QforEveryStep.at(howManyIterations - 1 - i).transpose();
+		//finalQ = QforEveryStep.at(howManyIterations - 1 - i) * finalQ;
+		finalQ= QforEveryStep.at(howManyIterations - 1 - i) * finalQ;
 	}
 	finalQ.print();
 	return finalQ;
@@ -291,20 +292,21 @@ Matrix Matrix::makeLeastSquaresMatrix(std::vector<unsigned> function) const {
 	for (unsigned i = 0; i < result.rows; i++)
 		for (unsigned j = 0; j < result.columns; j++)
 			result(i, j) = pow((*this)(i, 0), function.at(j));
+	result.print();
 	return result;
 }
 
-Matrix Matrix::invertUpperTriangleSquare() const {
-	Matrix inverse(columns,columns);
-	for (unsigned i = 0; i < columns; i++)
-		for (unsigned j = 0; j < columns; j++)
-			inverse(i, j) = 0;
-	// nem mûködik, több dolog mûködõképesnek tûnik
-	// TODO invertálás, ezen kívül már minden mûködõképesnek tûnik
-	
-	inverse.print();
-	return inverse;
-}
+//Matrix Matrix::invertUpperTriangleSquare() const {
+//	Matrix inverse(columns,columns);
+//	for (unsigned i = 0; i < columns; i++)
+//		for (unsigned j = 0; j < columns; j++)
+//			inverse(i, j) = 0;
+//	// nem mûködik, több dolog mûködõképesnek tûnik
+//	// TODO invertálás, ezen kívül már minden mûködõképesnek tûnik
+//	
+//	inverse.print();
+//	return inverse;
+//}
 
 Vector Matrix::SolveUpperTriangle(const Vector& other) const {
 	if (columns > rows)
@@ -313,15 +315,32 @@ Vector Matrix::SolveUpperTriangle(const Vector& other) const {
 		if ((*this)(i, i) == 0)
 			std::exit(20); //TODO hibakezelés
 	Matrix Rsquare(columns, columns);	// alsó nullákat tartalmazó rész nélküli négyzetes mátrix
-	Vector b(columns);
+	Vector v(columns);
 	for (unsigned i = 0; i < columns; i++) {
 		for (unsigned j = 0; j < columns; j++)
 			Rsquare(i, j) = (*this)(i, j);
-		b(i) = other(i);
+		v(i) = other(i);
 	}
+	Rsquare.print();
+	v.print();
 	//TODO felsõ háromszög négyzetes mátrix invertálása
-	Matrix inverseRSquare = Rsquare.invertUpperTriangleSquare();
-	return inverseRSquare * b;
+	//Matrix inverseRSquare = Rsquare.invertUpperTriangleSquare();
+	//return inverseRSquare * b;
+
+	Vector result(columns);
+	result.fill(0);
+	double temp;
+	for (int i = columns - 1; i >= 0; i--) {
+		result(i) = v(i);
+		for (int j = columns - 1; j > i; j--) {
+			result(i) -= Rsquare(i, j) * result(j);
+			result.print();
+		}
+		result(i) /= Rsquare(i, i);
+		result.print();
+	}
+	result.print();
+	return result;
 }
 
 Vector Matrix::SolveLeastSquaresProblem(std::vector<unsigned> function) const {
@@ -329,7 +348,9 @@ Vector Matrix::SolveLeastSquaresProblem(std::vector<unsigned> function) const {
 	Matrix Q = A.HouseholderOrthogonalize();
 	Matrix QT = Q;
 	QT.transpose();
+	QT.print();
 	Matrix R = QT * A;
+	R.print();
 	// TODO R floating point hiba korrigálás, vagy csak hagyjuk figyelmen kívül azon értékeket
 	Vector b = (*this).extractColumn(1);
 	unsigned iter = std::min(R.rows, R.columns);

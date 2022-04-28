@@ -26,6 +26,7 @@ void testMatrix3() {
 	std::vector<unsigned> function;
 	function.push_back(0);
 	function.push_back(1);
+	function.push_back(2);
 	m1.SolveLeastSquaresProblem(function);
 }
 
