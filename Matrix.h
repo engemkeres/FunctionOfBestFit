@@ -37,6 +37,7 @@ public:
 	//Matrix extractRow(unsigned rowindex) const; - nem fog kelleni valószínûleg
 	Matrix& pushVector(const Vector& other);
 	Vector extractColumn(unsigned columnindex) const;
+	void vectorToMatrix(const Vector& other);
 	
 	void print() const;
 
@@ -52,6 +53,6 @@ public:
 	// transzponálás ( mátrix sor-oszlop csere)
 	void transpose();	
 	// inverz számolás
-	Matrix UpperTriangleInverse();	
+	Vector HouseholderSolve(); //desktruktív, elrontja a mátrixot
 
 };

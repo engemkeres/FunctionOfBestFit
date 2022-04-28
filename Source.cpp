@@ -18,11 +18,21 @@ void testMatrix2(const char* fName) {
 	m2.print();
 }
 
+void testMatrix3() {
+	Matrix m1;
+	double varray[] = { 1,-2,1,-1,1,0,1,2,1,3 };
+	m1.fillFromArray(5, 2, varray);
+	m1.print();
+	m1.HouseholderSolve();
+}
+
 int main(int argc, char** argv) { //F
 	//testMatrix(testPointVector());
 	// parancssori argumentumként beolvasott fájlnév:
-	const char* fName = "TesttFile1.txt";
-	testMatrix2(fName);
+	//const char* fName = "TesttFile1.txt";
+	//testMatrix2(fName);
+	testMatrix3();
+
 
 }
 

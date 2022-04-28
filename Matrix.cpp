@@ -234,3 +234,69 @@ Vector Matrix::extractColumn(unsigned columnindex) const {
 		result(i) = (*this)(i, columnindex);
 	return result;
 }
+
+void Matrix::vectorToMatrix(const Vector& other) {
+	(*this).empty();
+	setSize(other.getSize(), 1);
+	for (unsigned i = 0; i < rows; i++)
+		(*this)(i, 0) = other(i);
+}
+// már a keresett függvény szerint beállított mátrixra mûködik - másik függvény lesz, ami szétbontja a koordináta mátrixot, illetve ezt is fell kell majd bontani legalább 5-6 függvényre
+Vector Matrix::HouseholderSolve() {
+	Matrix A = (*this);
+	unsigned matrixRows = (*this).rows;
+	unsigned matrixColumns = (*this).columns;
+	unsigned howManyIterations = std::min(rows - 1, columns);
+	std::vector<Matrix> QforEveryStep;
+	for (unsigned i = 0; i < howManyIterations; i++) {
+		Vector x = (*this).extractColumn(0);		x.print();		// elsõ oszlop kiemelése 
+		Vector e(matrixRows - i);					// azonos méretû kanonikus bázisvektor [1;0;...;0]
+		e.fill(0);
+		e(0) = 1;									e.print();
+		Vector u = x - e * x.length();				u.print();			// u=x-||X||*e
+		Vector v = u * (1 / u.length());			v.print();					// v=u/||u||
+		Matrix I;
+		I.makeIdentity(matrixRows - i);				I.print();			//x hosszának megfelelõ egységmátrix
+		Matrix Q;
+		Q.setSize(matrixRows - i);					//Q is legyen ekkora
+		// kell diadikus szorzat implementáció - elõször mátrixxá kell alakítani a vektor, majd önmaga*transzponált(önmaga)
+		Matrix w;
+		w.vectorToMatrix(v);						// mátrixxá alakított vektor, hogy lehessen diadikus szorzatot alkotni
+		Matrix y = w;
+		w.transpose();								y.print(); w.print();			//y= valamilyen vektor, w=elõzõ vektor transzpontáltja
+		Q = I - y * w * 2;							Q.print();
+		//Q-t Matrix.rows sorúvá és oszlopúvá kell tenni elõször, hogy utána csak össze kelljen szorozni õket, de úgy, hogy a bõvített rész egységmátrix-szerû legyen
+		Matrix identityQ;
+		identityQ.makeIdentity(matrixRows);			identityQ.print();
+		for (unsigned i = howManyIterations-1; i < matrixRows; i++)
+			for (unsigned j = howManyIterations-1; j < matrixRows; j++)
+				identityQ(i , j ) = Q(i-howManyIterations-1, j-howManyIterations-1);
+													identityQ.print();				// valami itt nem jó, de eddig az elsõ teszt végig lefutott
+		QforEveryStep.push_back(identityQ);	//Q-k eltárolása, cikluson kívüli alkalmazásra
+		Matrix H = Q * (*this);						H.print();				// H=Q*A
+		Matrix subH;
+		subH.setSize(rows - 1, columns - 1);	//almátrix, melynek következõ ciklusban az elsõ oszlopát kell venni
+		for (unsigned i = 1; i < H.rows; i++)
+			for (unsigned j = 1; j < H.columns; j++)
+				subH(i - 1, j - 1) = H(i, j);
+													subH.print();
+		(*this) = subH;
+		//itt kezdõdik majd valahogy újra, a subH-nak vesszük az elsõ oszlopát
+	}
+	Matrix finalQ;
+	finalQ.makeIdentity(matrixRows);
+	for (unsigned i = 0; i < howManyIterations; i++) {
+		finalQ.transpose();
+		QforEveryStep.at(howManyIterations - 1 - i).transpose();
+		finalQ = QforEveryStep.at(howManyIterations - 1 - i) * finalQ;
+	}
+													finalQ.print();
+	Matrix finalQtransposed = finalQ;
+	finalQtransposed.transpose();
+	Matrix R = finalQtransposed * A;				R.print();
+
+
+	//temporary, csak hogy fusson
+	Vector vir(2);
+	return vir;
+}
