@@ -191,17 +191,6 @@ void Matrix::print() const {
 	std::cout << std::endl;
 }
 
-//void Matrix::fillFromPointVector(const PointVector& points, const std::vector<int>& function)
-//{
-//	empty();
-//	setSize(points.getLength(), function.size());
-//	for (unsigned i = 0; i < rows; i++) {
-//		for (unsigned j = 0; j < columns; j++) {
-//			(*this)(i,j) = pow(points(i, 'x'), function.at(j));
-//		}
-//	}
-//}
-
 void Matrix::fillFromArray(unsigned rows, unsigned columns, double* dataArray)	// TODO kinek a felelõssége jó indexet megadni? - meghívó, oda kell majd a catch
 {
 	empty();
@@ -293,3 +282,61 @@ Matrix Matrix::HouseholderOrthogonalize() const {
 	finalQ.print();
 	return finalQ;
 }
+
+Matrix Matrix::makeLeastSquaresMatrix(std::vector<unsigned> function) const {
+	if (columns != 2)
+		std::exit(18);//TODO hibakezelés
+	Matrix result;
+	result.setSize(rows, function.size());
+	for (unsigned i = 0; i < result.rows; i++)
+		for (unsigned j = 0; j < result.columns; j++)
+			result(i, j) = pow((*this)(i, 0), function.at(j));
+	return result;
+}
+
+Vector Matrix::SolveUpperTriangle(const Vector& other) const {
+	if (columns > rows)
+		std::exit(19);//TODO hibakezelés, nincs megoldás, több pont kéne: megadott fokszámokkal legalább egyezzen meg a pontok száma, de inkább legyen több, jóval több
+	for (unsigned i = 0; i < columns; i++)
+		if ((*this)(i, i) == 0)
+			std::exit(20); //TODO hibakezelés
+	Matrix Rsquare(columns, columns);	// alsó nullákat tartalmazó rész nélküli négyzetes mátrix
+	Vector b(columns);
+	for (unsigned i = 0; i < columns; i++) {
+		for (unsigned j = 0; j < columns; j++)
+			Rsquare(i, j) = (*this)(i, j);
+		b(i) = other(i);
+	}
+
+}
+
+Vector Matrix::SolveLeastSquaresProblem(std::vector<unsigned> function) const {
+	Matrix A = (*this).makeLeastSquaresMatrix(function);
+	Matrix Q = A.HouseholderOrthogonalize();
+	Matrix QT = Q;
+	QT.transpose();
+	Matrix R = QT * A;
+	// TODO R floating point hiba korrigálás, vagy csak hagyjuk figyelmen kívül azon értékeket
+	Vector b = (*this).extractColumn(1);
+	unsigned iter = std::min(R.rows, R.columns);
+	for (unsigned i = 0; i < R.rows; i++)
+		for (unsigned j = 0; j < R.columns; j++)
+			if (i > j)
+				R(i, j) = 0;
+	R.print();
+	Vector y = QT * b;
+	// TODO triviális egyenletrendszer megoldás, vagy felsõ háromszög mátrix invertálás
+	Vector result = R.SolveUpperTriangle(y);
+	return result;
+}
+
+//void Matrix::fillFromPointVector(const PointVector& points, const std::vector<int>& function)
+//{
+//	empty();
+//	setSize(points.getLength(), function.size());
+//	for (unsigned i = 0; i < rows; i++) {
+//		for (unsigned j = 0; j < columns; j++) {
+//			(*this)(i,j) = pow(points(i, 'x'), function.at(j));
+//		}
+//	}
+//}

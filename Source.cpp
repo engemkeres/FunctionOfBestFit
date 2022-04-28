@@ -20,10 +20,13 @@ void testMatrix2(const char* fName) {
 
 void testMatrix3() {
 	Matrix m1;
-	double varray[] = { 1,-2,1,-1,1,0,1,2,1,3 };
+	double varray[] = {-2,4,-1,2,0,1,2,1,3,1};
 	m1.fillFromArray(5, 2, varray);
 	m1.print();
-	m1.HouseholderOrthogonalize();
+	std::vector<unsigned> function;
+	function.push_back(0);
+	function.push_back(1);
+	m1.SolveLeastSquaresProblem(function);
 }
 
 int main(int argc, char** argv) { //F

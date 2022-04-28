@@ -32,7 +32,6 @@ public:
 	
 	void fillFromArray(unsigned rows, unsigned columns, double* dataArray);
 	
-	
 	//Vektorokkal dolgozó, de mátrixra hívandó függvények
 	//Matrix extractRow(unsigned rowindex) const; - nem fog kelleni valószínûleg
 	void pushVector(const Vector& other);
@@ -40,7 +39,6 @@ public:
 	//void vectorToMatrix(const Vector& other);
 	
 	void print() const;
-
 
 	double operator()(unsigned row, unsigned column) const;
 	double& operator()(unsigned row, unsigned columns);
@@ -54,5 +52,8 @@ public:
 	// transzponálás ( mátrix sor-oszlop csere)
 	void transpose();	
 	// inverz számolás
-	Matrix HouseholderOrthogonalize() const; // Q mátrixot adja vissza, melybõl a meghívó mátrix segítségével R megkapható
+	Matrix makeLeastSquaresMatrix(std::vector<unsigned> function) const;	// koordináta-mátrixra hívandó meg, ami a fájlból lett felépítve: A mátrixot adja vissza
+	Matrix HouseholderOrthogonalize() const; // Q mátrixot adja vissza, melybõl a meghívó mátrix (A) segítségével R megkapható
+	Vector SolveLeastSquaresProblem(std::vector<unsigned> function) const;
+	Vector SolveUpperTriangle(const Vector& other) const;
 };

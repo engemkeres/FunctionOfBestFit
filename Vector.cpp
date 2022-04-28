@@ -129,3 +129,8 @@ Vector& Vector::operator=(const Vector& other)
 	this->data = other.data;
 	return (*this);
 }
+
+void Vector::push(double value) {
+	setSize(size + 1);
+	data.push_back(value);
+}
