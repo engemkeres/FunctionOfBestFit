@@ -238,7 +238,7 @@ void Matrix::outerProduct(const Vector& other) {
 	(*this) = v * vToTranspose;
 }
 
-// már a keresett függvény szerint beállított mátrixra mûködik - másik függvény lesz, ami szétbontja a koordináta mátrixot, illetve ezt is fell kell majd bontani legalább 5-6 függvényre
+// már a keresett függvény szerint beállított mátrixra mûködik - másik függvény lesz, ami szétbontja a koordináta mátrixot
 Matrix Matrix::HouseholderOrthogonalize() const {
 	Matrix A = (*this);
 	unsigned howManyIterations = std::min(rows - 1, columns);
@@ -273,7 +273,7 @@ Matrix Matrix::HouseholderOrthogonalize() const {
 		A = subH;
 	}
 	Matrix finalQ;
-	finalQ.makeIdentity(rows);													//Q=Q1T*Q2T*...*QNT
+	finalQ.makeIdentity(rows);													//Q=Q1*Q2*...*QN
 	for (unsigned i = 0; i < howManyIterations; i++) {
 		//finalQ.transpose();
 		//QforEveryStep.at(howManyIterations - 1 - i).transpose();
@@ -312,7 +312,7 @@ Vector Matrix::SolveUpperTriangle(const Vector& other) const {
 	if (columns > rows)
 		std::exit(19);//TODO hibakezelés, nincs megoldás, több pont kéne: megadott fokszámokkal legalább egyezzen meg a pontok száma, de inkább legyen több, jóval több
 	for (unsigned i = 0; i < columns; i++)
-		if ((*this)(i, i) == 0)
+		if (abs((*this)(i, i)) < 0.000000001 ) // TODO epsilonos közelítés, mert == 0 nem szabad double-el
 			std::exit(20); //TODO hibakezelés
 	Matrix Rsquare(columns, columns);	// alsó nullákat tartalmazó rész nélküli négyzetes mátrix
 	Vector v(columns);
@@ -360,7 +360,6 @@ Vector Matrix::SolveLeastSquaresProblem(std::vector<unsigned> function) const {
 				R(i, j) = 0;
 	R.print();
 	Vector y = QT * b;
-	// TODO triviális egyenletrendszer megoldás, vagy felsõ háromszög mátrix invertálás
 	Vector result = R.SolveUpperTriangle(y);
 	return result;
 }
@@ -375,3 +374,4 @@ Vector Matrix::SolveLeastSquaresProblem(std::vector<unsigned> function) const {
 //		}
 //	}
 //}
+

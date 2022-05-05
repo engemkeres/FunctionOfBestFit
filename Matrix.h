@@ -56,5 +56,5 @@ public:
 	Matrix HouseholderOrthogonalize() const; // Q mátrixot adja vissza, melybõl a meghívó mátrix (A) segítségével R megkapható
 	Vector SolveLeastSquaresProblem(std::vector<unsigned> function) const;
 	Vector SolveUpperTriangle(const Vector& other) const;
-	Matrix invertUpperTriangleSquare() const;
+	//Matrix invertUpperTriangleSquare() const;
 };
