@@ -10,7 +10,7 @@ Matrix::Matrix(const Matrix& other) {
 }
 
 Matrix::Matrix(const char* fName) : rows(0), columns(2)
-{
+{																			// TODO hibakezelés, mely új lehetõséget biztosít másik fájl, másik fokszám megadadására, és nem egybõl kilép a program
 	std::ifstream inputFile;
 	double temp;
 	try {
@@ -53,6 +53,10 @@ unsigned Matrix::getColumns() const {
 	return columns;
 }
 
+unsigned Matrix::getSize() const {
+	return columns * rows;
+}
+
 void Matrix::setSize(unsigned rows, unsigned columns) {
 	this->rows = rows;
 	this->columns = columns;
@@ -62,9 +66,9 @@ void Matrix::setSize(unsigned rows, unsigned columns) {
 void Matrix::empty() {
 	rows = 0;
 	columns = 0;
-	data.clear();		// vektort kiüríti, mérete 0, de a lefoglalt terület nincs felszabadítva
-	data.shrink_to_fit();	// a vektor ténylegesen lefoglalt terülét is felszabadítja, mert 0 méret tartozik a clear-elt vektorhoz, és arra zsugorítja
-}
+	data.clear();																// vektort kiüríti, mérete 0, de a lefoglalt terület nincs felszabadítva
+	data.shrink_to_fit();														// a vektor ténylegesen lefoglalt terülét is felszabadítja, 
+}																				// mert 0 méret tartozik a clear-elt vektorhoz, és arra zsugorítja
 
 double Matrix::operator()(unsigned row, unsigned column) const {
 	if (row > rows - 1 || column > columns - 1)
@@ -156,17 +160,17 @@ Matrix& Matrix::operator=(const Matrix& other)
 	return (*this);
 }
 
-void Matrix::transpose()
-{
-	Matrix tmp;
-	tmp.setSize(columns, rows);
+void Matrix::transpose()														// transzponálás
+{																				// 1 2 3	 1 4 7
+	Matrix tmp;																	// 4 5 6  >> 2 5 8
+	tmp.setSize(columns, rows);													// 7 8 9	 3 6 9
 	for (unsigned i = 0; i < rows; i++)
 		for (unsigned j = 0; j < columns; j++)
 			tmp(j, i) = (*this)(i, j);
 	*this = tmp;
 }
 
-void Matrix::pushVector(const Vector& other)
+void Matrix::pushVector(const Vector& other)									// oszlopvektor beillesztése mátrix elejébe 
 {
 	if (rows == 0 && columns == 0)
 		(*this).setSize(other.getSize(), 0);
@@ -181,7 +185,7 @@ void Matrix::pushVector(const Vector& other)
 	(*this) = temp;
 }
 
-void Matrix::print() const {
+void Matrix::print() const {													// diagnosztikai jellegû kiírás
 	for (unsigned i = 0; i < rows; i++)
 	{
 		for (unsigned j = 0; j < columns; j++)
@@ -201,10 +205,10 @@ void Matrix::fillFromArray(unsigned rows, unsigned columns, double* dataArray)	/
 			(*this)(i, j) = dataArray[k];
 }
 
-void Matrix::makeIdentity(unsigned size) {
-	setSize(size,size);
-	for (unsigned i = 0; i < size; i++)
-	{
+void Matrix::makeIdentity(unsigned size) {										// identitásmátrixxá alakítás
+	setSize(size,size);															// 1 0 0 
+	for (unsigned i = 0; i < size; i++)											// 0 1 0 
+	{																			// 0 0 1 alakú
 		for (unsigned j = 0; j < size; j++)
 			if(i==j)
 				(*this)(i, j) = 1;
@@ -213,7 +217,7 @@ void Matrix::makeIdentity(unsigned size) {
 	}
 }
 
-Vector Matrix::extractColumn(unsigned columnindex) const {
+Vector Matrix::extractColumn(unsigned columnindex) const {						// adott indexû oszlopvektor kiemelése mátrixból
 	if (columnindex > columns - 1)
 		std::exit(11); //TODO hibakezelés túl nagy index esetén
 	Vector result;
@@ -230,9 +234,9 @@ Vector Matrix::extractColumn(unsigned columnindex) const {
 //		(*this)(i, 0) = other(i);
 //}
 
-void Matrix::outerProduct(const Vector& other) {
-	Matrix vToTranspose;
-	vToTranspose.pushVector(other);
+void Matrix::outerProduct(const Vector& other) {								// két vektor diadikus szorzata
+	Matrix vToTranspose;														// A=v*v^T
+	vToTranspose.pushVector(other);												// ha v vektor n sorú, akkor A egy n*n-es mátrix lesz
 	Matrix v = vToTranspose;
 	vToTranspose.transpose();
 	(*this) = v * vToTranspose;
@@ -249,13 +253,15 @@ Matrix Matrix::HouseholderOrthogonalize() const {
 		e.makeCanonicBase(rows - iter);				e.print();					// azonos méretû kanonikus bázisvektor [1;0;...;0]
 		Vector u = x - e * x.length();				u.print();					// u=x-||X||*e
 		Vector v = u * (1 / u.length());			v.print();					// v=u/||u||
+
 		Matrix I;
 		I.makeIdentity(rows - iter);				I.print();					//x hosszának megfelelõ egységmátrix
 		Matrix Q;
 		Q.setSize(rows - iter);													//Q is legyen ekkora
 		Matrix dyad;
 		dyad.outerProduct(v);													// diadikus szorzat
-		Q = I - dyad * 2;							Q.print();					//Q = I - v * v^T * 2;
+		Q = I - dyad * 2;							Q.print();					//Q = I - v * v^T * 2; Householder tükrözés
+
 		Matrix identityQ;
 		identityQ.makeIdentity(rows);				identityQ.print();
 		for (unsigned i = iter; i < rows; i++)									// Q mátrixot az A mátrix soraival megegyezõ egységmátrixxá kell kibõvíteni úgy, hogy Q-tól balra fel legyen a kitöltés
@@ -263,10 +269,11 @@ Matrix Matrix::HouseholderOrthogonalize() const {
 				identityQ(i , j ) = Q(i-iter, j-iter);	
 													identityQ.print();			
 		QforEveryStep.push_back(identityQ);										//Q-k eltárolása, cikluson kívüli alkalmazásra
-		Matrix H = Q * A;							H.print();					// H=Q*A //H1-ben 0-k helyén 1*10^-16 értékekek vannak, ezeket a R mátrixban majd nullázom
-		Matrix subH;
+		Matrix H = Q * A;							H.print();					// H=Q*A //H1-ben 0-k helyén 1*10^-16 értékekek vannak, ezekrõl tudjuk, hogy kézi számolás esetén mind 0 lenne,
+		Matrix subH;															// kezelhetjük õket úgy (nem szükséges velük késõbb számítást végezni, elég kihagyni)
+
 		subH.setSize(A.rows - 1, A.columns - 1);								//almátrix, melynek következõ ciklusban az elsõ oszlopát kell venni
-		for (unsigned i = 1; i < H.rows; i++)
+		for (unsigned i = 1; i < H.rows; i++)									//
 			for (unsigned j = 1; j < H.columns; j++)
 				subH(i - 1, j - 1) = H(i, j);
 													subH.print();
@@ -288,11 +295,11 @@ Matrix Matrix::makeLeastSquaresMatrix(std::vector<unsigned> function) const {
 	if (columns != 2)
 		std::exit(18);//TODO hibakezelés
 	Matrix result;
-	result.setSize(rows, function.size());
-	for (unsigned i = 0; i < result.rows; i++)
-		for (unsigned j = 0; j < result.columns; j++)
-			result(i, j) = pow((*this)(i, 0), function.at(j));
-	result.print();
+	result.setSize(rows, function.size());											// a megadott polinom fokszámoknak megfelelõ mátrixot hoz létre,
+	for (unsigned i = 0; i < result.rows; i++)										// melyen végrehajtható a legkisebb négyzetek módszerével történõ megoldás
+		for (unsigned j = 0; j < result.columns; j++)				
+			result(i, j) = pow((*this)(i, 0), function.at(j));						// a mátrix egyes soraiba az adott pont x koordinátái kerülnek megadott fokszámokon: 
+	result.print();																	// pl: (3,5) pont, y=a+bx+cx^2 polinom: 1 3 9 a hozzá tartozó sorban 
 	return result;
 }
 
@@ -312,7 +319,7 @@ Vector Matrix::SolveUpperTriangle(const Vector& other) const {
 	if (columns > rows)
 		std::exit(19);//TODO hibakezelés, nincs megoldás, több pont kéne: megadott fokszámokkal legalább egyezzen meg a pontok száma, de inkább legyen több, jóval több
 	for (unsigned i = 0; i < columns; i++)
-		if (abs((*this)(i, i)) < 0.000000001 ) // TODO epsilonos közelítés, mert == 0 nem szabad double-el
+		if (abs((*this)(i, i)) < 0.000000001 ) // epsilonos közelítés, mert == 0 nem szabad double-el
 			std::exit(20); //TODO hibakezelés
 	Matrix Rsquare(columns, columns);	// alsó nullákat tartalmazó rész nélküli négyzetes mátrix
 	Vector v(columns);
@@ -330,11 +337,11 @@ Vector Matrix::SolveUpperTriangle(const Vector& other) const {
 	Vector result(columns);
 	result.fill(0);
 	double temp;
-	for (int i = columns - 1; i >= 0; i--) {
-		result(i) = v(i);
-		for (int j = columns - 1; j > i; j--) {
-			result(i) -= Rsquare(i, j) * result(j);
-			result.print();
+	for (int i = columns - 1; i >= 0; i--) {										// triviális egyenletrendszer megoldása, visszahelyettesítéssel
+		result(i) = v(i);															// ax1+bx2+cx3 = d
+		for (int j = columns - 1; j > i; j--) {										//     ex2+fx3 = g
+			result(i) -= Rsquare(i, j) * result(j);									//         hx3 = i
+			result.print();															// tehát x3=i/h, x2=(g-f*i/h)/e....stb.
 		}
 		result(i) /= Rsquare(i, i);
 		result.print();
@@ -351,7 +358,7 @@ Vector Matrix::SolveLeastSquaresProblem(std::vector<unsigned> function) const {
 	QT.print();
 	Matrix R = QT * A;
 	R.print();
-	// TODO R floating point hiba korrigálás, vagy csak hagyjuk figyelmen kívül azon értékeket
+	// TODO R floating point hiba korrigálás, vagy csak hagyjuk figyelmen kívül azon értékeket, kézi számolás esetén nullák lennének
 	Vector b = (*this).extractColumn(1);
 	unsigned iter = std::min(R.rows, R.columns);
 	for (unsigned i = 0; i < R.rows; i++)

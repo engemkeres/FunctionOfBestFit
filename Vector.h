@@ -3,8 +3,6 @@
 #include <vector>
 #include <math.h>
 
-// igazából megvalósítható templateként, és akkor ilyen vektorban el tudom tárolni a parancssoron beolvasandó polinom fokszámait [int]-ként
-
 class Vector
 {
 private:
@@ -30,7 +28,7 @@ public:
 	Vector operator+(const Vector& other) const;
 	Vector operator-(const Vector& other) const;
 	double dotProduct(const Vector& other) const; // skaláris szorzás
-	// vektoriális szorzás eredménye mátrix, az a mátrix osztályban legyen definiálva
+	// vektoriális szorzás eredménye mátrix, az a mátrix osztályban legyen definiálva, hogy ne legyen kereszt-includeolás a header fájlokkal
 	Vector operator*(double times) const;
 	Vector& operator=(const Vector& other);
 	void push(double value);

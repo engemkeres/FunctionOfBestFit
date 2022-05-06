@@ -20,6 +20,7 @@ public:
 
 	unsigned getRows() const;
 	unsigned getColumns() const;
+	unsigned getSize() const;
 	// identitásmátrix létrehozása
 	void makeIdentity(unsigned size);
 	// méret, és ezzel az STL tároló által foglalandó memória beállítása
