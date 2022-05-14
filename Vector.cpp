@@ -23,12 +23,13 @@ void Vector::setSize(unsigned size)
 	this->data.resize(size);
 }
 
-void Vector::empty()
-{
-	size = 0;
-	data.clear();
-	data.shrink_to_fit();
-}
+// nincs használva
+//void Vector::empty()
+//{
+//	size = 0;
+//	data.clear();
+//	data.shrink_to_fit();
+//}
 
 double Vector::length() const
 {
@@ -120,15 +121,16 @@ Vector Vector::operator-(const Vector& other) const
 	return result;
 }
 
-double Vector::dotProduct(const Vector& other) const
-{
-	if (this->size != other.size)
-		throw std::domain_error("Matrices can't be multiplied due to row size mismatch!");
-	double result = 0;
-	for (unsigned i = 0; i < size; i++)
-		result += (*this)(i) * other(i);
-	return result;
-}
+// nincs használva
+//double Vector::dotProduct(const Vector& other) const
+//{
+//	if (this->size != other.size)
+//		throw std::domain_error("Matrices can't be multiplied due to row size mismatch!");
+//	double result = 0;
+//	for (unsigned i = 0; i < size; i++)
+//		result += (*this)(i) * other(i);
+//	return result;
+//}
 
 Vector Vector::operator*(double times) const
 {
@@ -146,7 +148,8 @@ Vector& Vector::operator=(const Vector& other)
 	return (*this);
 }
 
-void Vector::push(double value) {
-	setSize(size + 1);
-	data.push_back(value);
-}
+// nincs használva
+//void Vector::push(double value) {
+//	setSize(size + 1);
+//	data.push_back(value);
+//}

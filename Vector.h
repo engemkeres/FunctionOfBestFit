@@ -16,7 +16,7 @@ public:
 
 	unsigned getSize() const;
 	void setSize(unsigned size);
-	void empty();
+	//void empty();
 	double length() const;	// vektor hossza
 	void normalize();	// vektor egységhosszúvá tétele
 	void fill(double num);
@@ -28,7 +28,7 @@ public:
 	double& operator()(unsigned size);
 	Vector operator+(const Vector& other) const;
 	Vector operator-(const Vector& other) const;
-	double dotProduct(const Vector& other) const; // skaláris szorzás
+	//double dotProduct(const Vector& other) const; // skaláris szorzás
 	// vektoriális szorzás eredménye mátrix, az a mátrix osztályban legyen definiálva, hogy ne legyen kereszt-includeolás a header fájlokkal
 	Vector operator*(double times) const;
 	Vector& operator=(const Vector& other);

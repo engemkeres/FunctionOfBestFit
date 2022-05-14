@@ -12,11 +12,11 @@ Matrix::Matrix(const Matrix& other) {
 Matrix::Matrix(const char* fName) : rows(0), columns(2)
 {											// TODO hibakezelés, mely új lehetõséget biztosít másik fájl, másik fokszám megadadására, és nem egybõl kilép a program
 	std::ifstream inputFile;
-	double temp;
 	try {
 		inputFile.open(fName);
 		if (inputFile.is_open())
 		{
+			double temp;
 			while (true) {
 				inputFile >> temp;
 				if (inputFile.eof())
@@ -44,13 +44,15 @@ Matrix::Matrix(const char* fName) : rows(0), columns(2)
 
 Matrix::~Matrix() {};
 
-unsigned Matrix::getRows() const {
-	return rows;
-}
+// nincs használva
+//unsigned Matrix::getRows() const {
+//	return rows;
+//}
 
-unsigned Matrix::getColumns() const {
-	return columns;
-}
+// nincs használva
+//unsigned Matrix::getColumns() const {
+//	return columns;
+//}
 
 unsigned Matrix::getSize() const {
 	return columns * rows;
@@ -62,12 +64,13 @@ void Matrix::setSize(unsigned rows, unsigned columns) {
 	this->data.resize(rows * columns);
 }
 
-void Matrix::empty() {
-	rows = 0;
-	columns = 0;
-	data.clear();																// vektort kiüríti, mérete 0, de a lefoglalt terület nincs felszabadítva
-	data.shrink_to_fit();														// a vektor ténylegesen lefoglalt terülét is felszabadítja, 
-}																				// mert 0 méret tartozik a clear-elt vektorhoz, és arra zsugorítja
+// nincs használva
+//void Matrix::empty() {
+//	rows = 0;
+//	columns = 0;
+//	data.clear();																// vektort kiüríti, mérete 0, de a lefoglalt terület nincs felszabadítva
+//	data.shrink_to_fit();														// a vektor ténylegesen lefoglalt terülét is felszabadítja, 
+//}																				// mert 0 méret tartozik a clear-elt vektorhoz, és arra zsugorítja
 
 double Matrix::operator()(unsigned row, unsigned column) const {
 	if (row > rows - 1 || column > columns - 1)
@@ -195,15 +198,15 @@ void Matrix::print() const {													// diagnosztikai jellegû kiírás
 }
 
 // tesztelés használva, elvileg már nincs szükség rá
-void Matrix::fillFromArray(unsigned rows, unsigned columns, double* dataArray)	// TODO kinek a felelõssége jó indexet megadni? - meghívó, oda kell majd a catch
-{
-	empty();
-	setSize(rows, columns);
-	unsigned k=0;
-	for (unsigned i = 0; i < rows; i++)
-		for (unsigned j = 0; j < columns; j++, k++)
-			(*this)(i, j) = dataArray[k];
-}
+//void Matrix::fillFromArray(unsigned rows, unsigned columns, const double* dataArray)	// TODO kinek a felelõssége jó indexet megadni? - meghívó, oda kell majd a catch
+//{
+//	empty();
+//	setSize(rows, columns);
+//	unsigned k=0;
+//	for (unsigned i = 0; i < rows; i++)
+//		for (unsigned j = 0; j < columns; j++, k++)
+//			(*this)(i, j) = dataArray[k];
+//}
 
 void Matrix::makeIdentity(unsigned size) {										// identitásmátrixxá alakítás
 	setSize(size,size);															// 1 0 0 
@@ -245,14 +248,14 @@ Matrix Matrix::HouseholderOrthogonalize() const {
 		Vector e;
 		e.makeCanonicBase(rows - iter);											// azonos méretû kanonikus bázisvektor [1;0;...;0]
 		Vector u = x - e * x.length();											// u=x-||X||*e
-		Vector v = u * (1 / u.length());										// v=u/||u||
+		u.normalize();															// v=u/||u||
 
 		Matrix I;
 		I.makeIdentity(rows - iter);											//x hosszának megfelelõ egységmátrix
 		Matrix Q;
 		Q.setSize(rows - iter);													//Q is legyen ekkora
 		Matrix dyad;
-		dyad.outerProduct(v);													// diadikus szorzat
+		dyad.outerProduct(u);													// diadikus szorzat
 		Q = I - dyad * 2;														//Q = I - v * v^T * 2; Householder tükrözés
 
 		Matrix identityQ;
@@ -333,7 +336,7 @@ Vector Matrix::SolveLeastSquaresProblem(std::vector<unsigned> function) const {
 	R.print();
 	// TODO R floating point hiba korrigálás, vagy csak hagyjuk figyelmen kívül azon értékeket, kézi számolás esetén nullák lennének
 	Vector b = (*this).extractColumn(1);
-	unsigned iter = std::min(R.rows, R.columns);
+	//unsigned iter = std::min(R.rows, R.columns); biztos kihagyható?
 	for (unsigned i = 0; i < R.rows; i++)
 		for (unsigned j = 0; j < R.columns; j++)
 			if (i > j)
