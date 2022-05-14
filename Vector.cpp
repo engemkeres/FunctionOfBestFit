@@ -42,7 +42,7 @@ void Vector::normalize()
 {
 	double length = (*this).length();
 	for (unsigned i = 0; i < size; i++)
-		(*this)(i) /= length; // el kell tárolni a vektor hosszát, mert különben folyton változna a hossza
+		(*this)(i) /= length; // el kell tárolni a vektor hosszát, mert különben folyton változna a hossza számolás közben
 }
 
 void Vector::fill(double num)
@@ -87,14 +87,14 @@ void Vector::printEquation(std::vector<unsigned> function) const
 double Vector::operator()(unsigned index) const
 {
 	if (index > size - 1)
-		std::exit(13); //TODO hibakezelés
+		throw std::out_of_range("Too great index!");
 	return data.at(index);
 }
 
 double& Vector::operator()(unsigned index)
 {
 	if (index > size - 1)
-		std::exit(13); //TODO hibakezelés
+		throw std::out_of_range("Too great index!");
 	return data.at(index);
 }
 
@@ -102,7 +102,7 @@ Vector Vector::operator+(const Vector& other) const
 {
 	Vector result;
 	if (this->size != other.size)
-		std::exit(14); //TODO hibakezelés
+		throw std::domain_error("Differently sized vectors can't be added to each other!");
 	result.setSize(size);
 	for (unsigned i = 0; i < size; i++)
 		result(i) = (*this)(i) + other(i);
@@ -113,7 +113,7 @@ Vector Vector::operator-(const Vector& other) const
 {
 	Vector result;
 	if (this->size != other.size)
-		std::exit(14); //TODO hibakezelés
+		throw std::domain_error("Differently sized vectors can't be subtracted from each other!");
 	result.setSize(size);
 	for (unsigned i = 0; i < size; i++)
 		result(i) = (*this)(i) - other(i);
@@ -123,7 +123,7 @@ Vector Vector::operator-(const Vector& other) const
 double Vector::dotProduct(const Vector& other) const
 {
 	if (this->size != other.size)
-		std::exit(15); //TODO hibakezelés
+		throw std::domain_error("Matrices can't be multiplied due to row size mismatch!");
 	double result = 0;
 	for (unsigned i = 0; i < size; i++)
 		result += (*this)(i) * other(i);
