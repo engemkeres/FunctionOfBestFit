@@ -10,7 +10,7 @@ Matrix::Matrix(const Matrix& other) {
 }
 
 Matrix::Matrix(const char* fName) : rows(0), columns(2)
-{																			// TODO hibakezelés, mely új lehetõséget biztosít másik fájl, másik fokszám megadadására, és nem egybõl kilép a program
+{																				// TODO hibakezelés, mely új lehetõséget biztosít másik fájl, másik fokszám megadadására, és nem egybõl kilép a program
 	std::ifstream inputFile;
 	double temp;
 	try {
@@ -41,6 +41,7 @@ Matrix::Matrix(const char* fName) : rows(0), columns(2)
 		std::exit(1);
 	}
 	// ha nem nyílik meg a fájl, hibakezelés - jelenleg leáll a program, ha ebbe ütközik
+	// TODO leszármaztatott hibatípusok
 }
 
 Matrix::~Matrix() {};
@@ -227,13 +228,6 @@ Vector Matrix::extractColumn(unsigned columnindex) const {						// adott indexû 
 	return result;
 }
 
-//void Matrix::vectorToMatrix(const Vector& other) {
-//	(*this).empty();
-//	setSize(other.getSize(), 1);
-//	for (unsigned i = 0; i < rows; i++)
-//		(*this)(i, 0) = other(i);
-//}
-
 void Matrix::outerProduct(const Vector& other) {								// két vektor diadikus szorzata
 	Matrix vToTranspose;														// A=v*v^T
 	vToTranspose.pushVector(other);												// ha v vektor n sorú, akkor A egy n*n-es mátrix lesz
@@ -303,18 +297,6 @@ Matrix Matrix::makeLeastSquaresMatrix(std::vector<unsigned> function) const {
 	return result;
 }
 
-//Matrix Matrix::invertUpperTriangleSquare() const {
-//	Matrix inverse(columns,columns);
-//	for (unsigned i = 0; i < columns; i++)
-//		for (unsigned j = 0; j < columns; j++)
-//			inverse(i, j) = 0;
-//	// nem mûködik, több dolog mûködõképesnek tûnik
-//	// TODO invertálás, ezen kívül már minden mûködõképesnek tûnik
-//	
-//	inverse.print();
-//	return inverse;
-//}
-
 Vector Matrix::SolveUpperTriangle(const Vector& other) const {
 	if (columns > rows)
 		std::exit(19);//TODO hibakezelés, nincs megoldás, több pont kéne: megadott fokszámokkal legalább egyezzen meg a pontok száma, de inkább legyen több, jóval több
@@ -330,9 +312,6 @@ Vector Matrix::SolveUpperTriangle(const Vector& other) const {
 	}
 	Rsquare.print();
 	v.print();
-	//TODO felsõ háromszög négyzetes mátrix invertálása
-	//Matrix inverseRSquare = Rsquare.invertUpperTriangleSquare();
-	//return inverseRSquare * b;
 
 	Vector result(columns);
 	result.fill(0);
@@ -370,15 +349,3 @@ Vector Matrix::SolveLeastSquaresProblem(std::vector<unsigned> function) const {
 	Vector result = R.SolveUpperTriangle(y);
 	return result;
 }
-
-//void Matrix::fillFromPointVector(const PointVector& points, const std::vector<int>& function)
-//{
-//	empty();
-//	setSize(points.getLength(), function.size());
-//	for (unsigned i = 0; i < rows; i++) {
-//		for (unsigned j = 0; j < columns; j++) {
-//			(*this)(i,j) = pow(points(i, 'x'), function.at(j));
-//		}
-//	}
-//}
-

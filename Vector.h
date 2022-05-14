@@ -22,6 +22,7 @@ public:
 	void fill(double num);
 	void makeCanonicBase(unsigned size);
 	void print() const;
+	void printEquation(std::vector<unsigned> function) const;
 
 	double operator()(unsigned index) const;
 	double& operator()(unsigned size);

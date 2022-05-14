@@ -10,8 +10,7 @@ Vector::Vector(const Vector& other)
 	*this = other;
 }
 
-Vector::~Vector()
-{}
+Vector::~Vector() {}
 
 unsigned Vector::getSize() const
 {
@@ -65,6 +64,23 @@ void Vector::print() const
 {
 	for (unsigned i = 0; i < size; i++)
 		std::cout << (*this)(i) << std::endl;
+	std::cout << std::endl;
+}
+
+void Vector::printEquation(std::vector<unsigned> function) const
+{
+	std::cout << "y = ";
+	for (unsigned i = 0; i < function.size(); i++) {
+		if (i == 0)
+			std::cout << (*this)(i);
+		else {
+			std::cout << ((*this)(i) < 0 ? " - " : " + ");
+			if (i == 1)
+				std::cout << ((*this)(i) < 0 ? (-1) * (*this)(i) : (*this)(i)) << "x";
+			else
+				std::cout << ( (*this)(i) < 0 ? (-1)*(*this)(i) : (*this)(i) )<< "x^" << function.at(i);
+		}
+	}
 	std::cout << std::endl;
 }
 
