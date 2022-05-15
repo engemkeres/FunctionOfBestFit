@@ -1,4 +1,4 @@
-# Függvény illesztés ponthalmazra
+# Polinom illesztés ponthalmazra
 A programozás alapja 2. házi feladat - Baki Bence István [BOIR4K]
 ## Informális házi feladat leírás
 Mérnöki problémamegoldás során gyakran ütközik az ember mérés után feldolgozandó adathalmazba, melyre a legjobban illeszkedő függvényt keressük. Ahelyett, hogy keresnénk az interneten egy az igényeinknek 95%-ban megfelelő szolgáltatást 30 másodperc alatt, az egyszeri mérnök-hallgató megpróbál inkább saját programot írni rá 2 hét alatt, ami a maradék 5% igényt is megvalósítja (kézi szövegdobozba gépelés helyett .csv/.txt fájl feldolgozás).
