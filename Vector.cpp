@@ -10,33 +10,23 @@ Vector::Vector(const Vector& other)
 	*this = other;
 }
 
-Vector::~Vector() {}
-
 unsigned Vector::getSize() const
 {
 	return size;
 }
 
 void Vector::setSize(unsigned size)
-{
+{	// nem csak a méret paraméter állítja át, hanem az STL tárolót is újraméretezi
 	this->size = size;
 	this->data.resize(size);
 }
-
-// nincs használva
-//void Vector::empty()
-//{
-//	size = 0;
-//	data.clear();
-//	data.shrink_to_fit();
-//}
 
 double Vector::length() const
 {
 	double result = 0;
 	for (unsigned i = 0; i < size; i++)
 		result += (*this)(i) * (*this)(i);
-	return sqrt(result);
+	return sqrt(result); // vonhatjuk a gyökés, mivel valós számok négyzetösszege biztonsan nem negatív
 }
 
 void Vector::normalize()
@@ -52,7 +42,7 @@ void Vector::fill(double num)
 }
 
 void Vector::makeCanonicBase(unsigned size)
-{
+{	// az elsõ koordináta 1, minden más 0
 	setSize(size);
 	(*this)(0) = 1;
 	for (unsigned i = 1; i < size; i++)
@@ -72,14 +62,14 @@ void Vector::printEquation(std::vector<unsigned> function) const
 {
 	std::cout << "y = ";
 	for (unsigned i = 0; i < function.size(); i++) {
-		if (i == 0)
+		if (function.at(i)==0)
 			std::cout << (*this)(i);
 		else {
-			std::cout << ((*this)(i) < 0 ? " - " : " + ");
-			if (i == 1)
-				std::cout << ((*this)(i) < 0 ? (-1) * (*this)(i) : (*this)(i)) << "x";
+			std::cout << ((*this)(i) < 0 ? " - " : " + ");	// csak az elsõ együttható elé nem kell +/--t tenni
+			if (function.at(i) == 1)
+				std::cout << ((*this)(i) < 0 ? (-1) * (*this)(i) : (*this)(i)) << "x"; // x^1 helyett csak x
 			else
-				std::cout << ( (*this)(i) < 0 ? (-1)*(*this)(i) : (*this)(i) )<< "x^" << function.at(i);
+				std::cout << ( (*this)(i) < 0 ? (-1)*(*this)(i) : (*this)(i) )<< "x^" << function.at(i); 
 		}
 	}
 	std::cout << std::endl;
@@ -100,7 +90,7 @@ double& Vector::operator()(unsigned index)
 }
 
 Vector Vector::operator+(const Vector& other) const
-{
+{ // eltérõ hosszúságú vektorok nem adhatóak össze
 	Vector result;
 	if (this->size != other.size)
 		throw std::domain_error("Differently sized vectors can't be added to each other!");
@@ -111,7 +101,7 @@ Vector Vector::operator+(const Vector& other) const
 }
 
 Vector Vector::operator-(const Vector& other) const
-{
+{ // eltérõ hosszúságú vektorok nem vonhatóak ki egymásból
 	Vector result;
 	if (this->size != other.size)
 		throw std::domain_error("Differently sized vectors can't be subtracted from each other!");
@@ -120,17 +110,6 @@ Vector Vector::operator-(const Vector& other) const
 		result(i) = (*this)(i) - other(i);
 	return result;
 }
-
-// nincs használva
-//double Vector::dotProduct(const Vector& other) const
-//{
-//	if (this->size != other.size)
-//		throw std::domain_error("Matrices can't be multiplied due to row size mismatch!");
-//	double result = 0;
-//	for (unsigned i = 0; i < size; i++)
-//		result += (*this)(i) * other(i);
-//	return result;
-//}
 
 Vector Vector::operator*(double times) const
 {
@@ -147,9 +126,3 @@ Vector& Vector::operator=(const Vector& other)
 	this->data = other.data;
 	return (*this);
 }
-
-// nincs használva
-//void Vector::push(double value) {
-//	setSize(size + 1);
-//	data.push_back(value);
-//}

@@ -9,7 +9,7 @@ Matrix::Matrix(const Matrix& other) {
 	*this = other;
 }
 
-Matrix::Matrix(const char* fName) : rows(0), columns(2)
+Matrix::Matrix(const std::string& fName) : rows(0), columns(2)
 {											// TODO hibakezelés, mely új lehetõséget biztosít másik fájl, másik fokszám megadadására, és nem egybõl kilép a program
 	std::ifstream inputFile;
 	try {
@@ -19,16 +19,18 @@ Matrix::Matrix(const char* fName) : rows(0), columns(2)
 			double temp;
 			while (true) {
 				inputFile >> temp;
+				data.push_back(temp);
 				if (inputFile.eof())
 					break;
-				data.push_back(temp);
 				inputFile >> temp;
-				if (inputFile.eof())
-					throw std::invalid_argument("Odd amount of numbers, can't produce coordinates, unusable file!");
 				data.push_back(temp);
 				rows++;
+				if (inputFile.eof())
+					break;
 			}
 			inputFile.close();
+			if(data.size()%2!=0)
+				throw std::invalid_argument("Odd amount of numbers, can't produce coordinates, unusable file!"); // elrontottam, meg kell javítani
 		}
 		else
 			throw std::invalid_argument("File cannot be found!");
@@ -39,10 +41,7 @@ Matrix::Matrix(const char* fName) : rows(0), columns(2)
 		std::exit(-1);
 	}
 	// ha nem nyílik meg a fájl, hibakezelés - jelenleg leáll a program, ha ebbe ütközik
-	// TODO leszármaztatott hibatípusok
 }
-
-Matrix::~Matrix() {};
 
 // nincs használva
 //unsigned Matrix::getRows() const {
@@ -63,14 +62,6 @@ void Matrix::setSize(unsigned rows, unsigned columns) {
 	this->columns = columns;
 	this->data.resize(rows * columns);
 }
-
-// nincs használva
-//void Matrix::empty() {
-//	rows = 0;
-//	columns = 0;
-//	data.clear();																// vektort kiüríti, mérete 0, de a lefoglalt terület nincs felszabadítva
-//	data.shrink_to_fit();														// a vektor ténylegesen lefoglalt terülét is felszabadítja, 
-//}																				// mert 0 méret tartozik a clear-elt vektorhoz, és arra zsugorítja
 
 double Matrix::operator()(unsigned row, unsigned column) const {
 	if (row > rows - 1 || column > columns - 1)
@@ -196,17 +187,6 @@ void Matrix::print() const {													// diagnosztikai jellegû kiírás
 	}
 	std::cout << std::endl;
 }
-
-// tesztelés használva, elvileg már nincs szükség rá
-//void Matrix::fillFromArray(unsigned rows, unsigned columns, const double* dataArray)	// TODO kinek a felelõssége jó indexet megadni? - meghívó, oda kell majd a catch
-//{
-//	empty();
-//	setSize(rows, columns);
-//	unsigned k=0;
-//	for (unsigned i = 0; i < rows; i++)
-//		for (unsigned j = 0; j < columns; j++, k++)
-//			(*this)(i, j) = dataArray[k];
-//}
 
 void Matrix::makeIdentity(unsigned size) {										// identitásmátrixxá alakítás
 	setSize(size,size);															// 1 0 0 
@@ -334,9 +314,7 @@ Vector Matrix::SolveLeastSquaresProblem(std::vector<unsigned> function) const {
 	QT.print();
 	Matrix R = QT * A;
 	R.print();
-	// TODO R floating point hiba korrigálás, vagy csak hagyjuk figyelmen kívül azon értékeket, kézi számolás esetén nullák lennének
 	Vector b = (*this).extractColumn(1);
-	//unsigned iter = std::min(R.rows, R.columns); biztos kihagyható?
 	for (unsigned i = 0; i < R.rows; i++)
 		for (unsigned j = 0; j < R.columns; j++)
 			if (i > j)
