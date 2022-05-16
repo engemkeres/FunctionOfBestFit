@@ -58,8 +58,10 @@ void Vector::print() const
 	std::cout << std::endl;
 }
 
-void Vector::printEquation(std::vector<unsigned> function) const
+void Vector::printEquation(std::vector<double> function) const // ide is kell epsilonos becslés, mert nem lehet 0 a kitevõ igazán
 {
+	typedef std::numeric_limits< double > dbl;
+	std::cout.precision(dbl::max_digits10);
 	std::cout << "y = ";
 	for (unsigned i = 0; i < function.size(); i++) {
 		if (function.at(i)==0)

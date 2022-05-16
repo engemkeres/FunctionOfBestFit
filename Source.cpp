@@ -6,23 +6,24 @@
 /// @param argc: parancssori argumentumok száma (0: program neve, 1: adatfájl neve, 2...n: fokszámok
 /// @param argv: parancssoron érkezett stringekre mutató pointerek tömbje
 /// @returns std::vector: fokszámok tömbje
-std::vector<unsigned> storeExponents(int argc, char* argv[]) { 
+std::vector<double> storeExponents(int argc, char* argv[]) { 
+	std::vector<double> function;
 	try {
 		if (argc < 3)
-			throw std::invalid_argument("You must enter at least 1 non-negative, whole number as exponent!");
-		for (int i = 2; i < argc; i++)
-			for (int j = 0; j < strlen(argv[i]); j++)
-				if ((argv[i])[j] < '0' || (argv[i])[j] > '9')
-					throw std::invalid_argument("You must enter non-negative, whole numbers as exponent!");
+			throw std::invalid_argument("You must enter at least 1 number as exponent!");
 	}
 	catch (std::invalid_argument& e) {
 		std::cerr << "Error: " << e.what() << std::endl;
 		std::exit(-1);
 	}
-	//unsigned
-	std::vector<unsigned> function;
-	for (int i = 2; i < argc; i++)
-		function.push_back((unsigned)std::stoi(argv[i]));
+	try {
+		for (int i = 2; i < argc; i++)
+			function.push_back((double)std::stod(argv[i]));
+	}
+	catch (std::invalid_argument& e) {
+		std::cerr << "Error: invalid exponents, all exponents must be numbers, separated only by spaces!";
+		std::exit(-1);
+	}
 	return function;
 }
 
@@ -44,7 +45,7 @@ void welcome() {
 int main(int argc, char* argv[]) {
 	if (argc < 2)
 		welcome();
-	std::vector<unsigned> function;		// fokszámokat tároló adatvektor
+	std::vector<double> function;		// fokszámokat tároló adatvektor
 	// el is kéne kapni azokat az exceptionöket - de újra felállás hibás fájl után: nem egyértelmû,
 	// hogy jogos-e az exceptionös/nem exceptionös megvalósítás, ezért inkább hagyom:
 	// hiba, próbálkozz újra, refer to help command stb.

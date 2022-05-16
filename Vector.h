@@ -49,7 +49,7 @@ public:
 	/// \brief A vektorban található együtthatók és a megadott fokszámok alapján kiírja a legjobban illeszkedõ grafikonú polinom képletét
 	/// @param function: fokszámokat tartalmazó adatvektor
 	/// 
-	void printEquation(std::vector<unsigned> function) const;
+	void printEquation(std::vector<double> function) const;
 	/// \brief Indexelõ operátor, visszaadja az index-edik számot a vektorban
 	/// @param index: kívánt érték indexe
 	/// @returns double: index-edik helyen található érték

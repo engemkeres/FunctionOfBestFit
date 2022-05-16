@@ -314,7 +314,7 @@ Matrix Matrix::HouseholderOrthogonalize() const {
 	return finalQ;
 }
 
-Matrix Matrix::makeLeastSquaresMatrix(std::vector<unsigned> function) const {
+Matrix Matrix::makeLeastSquaresMatrix(std::vector<double> function) const {
 	try {
 		if (columns != 2)
 			throw std::logic_error("Matrix not usable for 2D coordinates, it doesn't have 2 columns exactly!");
@@ -328,7 +328,7 @@ Matrix Matrix::makeLeastSquaresMatrix(std::vector<unsigned> function) const {
 	for (unsigned i = 0; i < result.rows; i++)										// melyen végrehajtható a legkisebb négyzetek módszerével történõ megoldás
 		for (unsigned j = 0; j < result.columns; j++)				
 			result(i, j) = pow((*this)(i, 0), function.at(j));						// a mátrix egyes soraiba az adott pont x koordinátái kerülnek megadott fokszámokon: 
-	result.print();																	// pl: (3,5) pont, y=a+bx+cx^2 polinom: 1 3 9 a hozzá tartozó sorban 
+																					// pl: (3,5) pont, y=a+bx+cx^2 polinom: 1 3 9 a hozzá tartozó sorban 
 	return result;
 }
 
@@ -359,8 +359,6 @@ Vector Matrix::SolveUpperTriangle(const Vector& other) const {
 			Rsquare(i, j) = (*this)(i, j);
 		v(i) = other(i);
 	}
-	Rsquare.print();
-	v.print();
 
 	Vector result(columns);
 	result.fill(0);
@@ -375,7 +373,7 @@ Vector Matrix::SolveUpperTriangle(const Vector& other) const {
 	return result;
 }
 
-Vector Matrix::SolveLeastSquaresProblem(std::vector<unsigned> function) const {
+Vector Matrix::SolveLeastSquaresProblem(std::vector<double> function) const {
 	Matrix A = (*this).makeLeastSquaresMatrix(function);							// Q*R = A
 	Matrix Q = A.HouseholderOrthogonalize();										// Q ortogonalizált mátrix
 	Matrix QT = Q;

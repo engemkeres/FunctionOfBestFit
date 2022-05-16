@@ -97,7 +97,7 @@ public:
 	/// \brief Legykisebb négyzetek módszeréhez hoz létre mátrixot
 	/// @param function: fokszámokat tartalmazó adatvektor
 	/// @returns Matrix: adott sorban az eredeti mátrix x koordinátája szerepel megfelelõ fokszámokon
-	Matrix makeLeastSquaresMatrix(std::vector<unsigned> function) const;
+	Matrix makeLeastSquaresMatrix(std::vector<double> function) const;
 	/// \brief Létrehozza a mátrix QR felbontásának Q, azaz ortogonalizált mátrixát,  Householder-tükrözés segítségével
 	/// 
 	/// @returns Matrix: Q ortogonalizált mátrix
@@ -105,7 +105,7 @@ public:
 	/// \brief Mátrix QR felbontás alapján a legkisebb négyzetek módszerével a legjobban illeszkedõ függvény együtthatóit keresi meg
 	/// @param function: fokszámokat tartalmazó adatvektor
 	/// @returns Vector: megoldás együtthatókat tartalmazó vektor
-	Vector SolveLeastSquaresProblem(std::vector<unsigned> function) const;
+	Vector SolveLeastSquaresProblem(std::vector<double> function) const;
 	/// \brief Triviális egyenletrendszer megoldása
 	/// @param other: változókra rendezett egyenletek jobb oldala
 	/// @returns megoldás együtthatókat tartalmazó vektor
