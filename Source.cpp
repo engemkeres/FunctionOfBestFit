@@ -2,8 +2,8 @@
 #include <string>
 #include "Matrix.h"
 
-/// \brief fokszámok eltárolása adatvektorba, csak egész, nem negatív kitevõk érvényesek
-/// @param argc: parancssori argumentumok száma (0: program neve, 1: adatfájl neve, 2...n: fokszámok
+/// \brief fokszámok eltárolása adatvektorba
+/// @param argc: parancssori argumentumok száma (0.: program neve, 1.: adatfájl neve, 2...n.: fokszámok
 /// @param argv: parancssoron érkezett stringekre mutató pointerek tömbje
 /// @returns std::vector: fokszámok tömbje
 std::vector<double> storeExponents(int argc, char* argv[]) { 
@@ -34,7 +34,7 @@ void welcome() {
 					"The file must be .txt format, filled the following way:\n"
 					"x y\nx y\nx y and so on...\n"
 					"The file musn't contain empty lines or other characters.\n"
-					"The listed exponents must be whole, non-negative numbers."<< std::endl;
+					"The listed exponents must be numbers."<< std::endl;
 }
 
 /// \brief Fõfüggvény, csak az algoritmus elindítására. Eltárolja a fokszámokat, meghívja a kiszámoló függvényt, majd kiírja az eredményt
