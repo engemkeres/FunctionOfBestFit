@@ -77,23 +77,41 @@ void Vector::printEquation(std::vector<unsigned> function) const
 
 double Vector::operator()(unsigned index) const
 {
-	if (index > size - 1)
-		throw std::out_of_range("Too great index!");
+	try {
+		if (index > size - 1)
+			throw std::out_of_range("Too great index!");
+	}
+	catch (std::out_of_range& e) {
+		std::cerr << "Error: " << e.what() << std::endl;
+		std::exit(-1);
+	}
 	return data.at(index);
 }
 
 double& Vector::operator()(unsigned index)
 {
-	if (index > size - 1)
-		throw std::out_of_range("Too great index!");
+	try {
+		if (index > size - 1)
+			throw std::out_of_range("Too great index!");
+	}
+	catch (std::out_of_range& e) {
+		std::cerr << "Error: " << e.what() << std::endl;
+		std::exit(-1);
+	}
 	return data.at(index);
 }
 
 Vector Vector::operator+(const Vector& other) const
 { // eltérõ hosszúságú vektorok nem adhatóak össze
 	Vector result;
-	if (this->size != other.size)
-		throw std::domain_error("Differently sized vectors can't be added to each other!");
+	try {
+		if (this->size != other.size)
+			throw std::domain_error("Differently sized vectors can't be added to each other!");
+	}
+	catch (std::domain_error& e) {
+		std::cerr << "Error: " << e.what() << std::endl;
+		std::exit(-1);
+	}
 	result.setSize(size);
 	for (unsigned i = 0; i < size; i++)
 		result(i) = (*this)(i) + other(i);
@@ -103,8 +121,14 @@ Vector Vector::operator+(const Vector& other) const
 Vector Vector::operator-(const Vector& other) const
 { // eltérõ hosszúságú vektorok nem vonhatóak ki egymásból
 	Vector result;
-	if (this->size != other.size)
-		throw std::domain_error("Differently sized vectors can't be subtracted from each other!");
+	try {
+		if (this->size != other.size)
+			throw std::domain_error("Differently sized vectors can't be subtracted from each other!");
+	}
+	catch (std::domain_error& e) {
+		std::cerr << "Error: " << e.what() << std::endl;
+		std::exit(-1);
+	}
 	result.setSize(size);
 	for (unsigned i = 0; i < size; i++)
 		result(i) = (*this)(i) - other(i);

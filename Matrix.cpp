@@ -9,7 +9,7 @@ Matrix::Matrix(const Matrix& other) {
 	*this = other;
 }
 
-Matrix::Matrix(const std::string& fName) : rows(0), columns(2)
+Matrix::Matrix(const char* fName) : rows(0), columns(2)
 {											// TODO hibakezelés, mely új lehetõséget biztosít másik fájl, másik fokszám megadadására, és nem egybõl kilép a program
 	std::ifstream inputFile;
 	try {
@@ -18,43 +18,75 @@ Matrix::Matrix(const std::string& fName) : rows(0), columns(2)
 		{
 			double temp;
 			while (true) {
-				inputFile >> temp;
-				data.push_back(temp);
-				if (inputFile.eof())
-					break;
-				inputFile >> temp;
-				data.push_back(temp);
+				for (int i = 0; i < 2; i++) {
+					inputFile >> std::ws;
+					inputFile >> temp;
+					if (inputFile.fail())
+						throw std::invalid_argument("File has non-numeric characters, not usable!");
+					data.push_back(temp);
+					inputFile >> std::ws;
+					if(i==0 && inputFile.eof())
+						throw std::invalid_argument("Odd amount of numbers, can't produce coordinates, unusable file!");
+				}
 				rows++;
 				if (inputFile.eof())
 					break;
+
+
+				//std::cin >> std::ws;
+				//inputFile >> temp;
+				//if (std::cin.fail())
+				//	throw std::invalid_argument("File has non-numeric characters, not usable!");
+				//data.push_back(temp);
+				//if (inputFile.eof())
+				//	break;
+				//inputFile >> temp;
+				//data.push_back(temp);
+				//rows++;
+				//if (inputFile.eof())
+				//	break;
 			}
 			inputFile.close();
-			if(data.size()%2!=0)
-				throw std::invalid_argument("Odd amount of numbers, can't produce coordinates, unusable file!"); // elrontottam, meg kell javítani
+			//if(data.size()%2!=0)
+			//	throw std::invalid_argument("Odd amount of numbers, can't produce coordinates, unusable file!"); // elrontottam, meg kell javítani
 		}
 		else
 			throw std::invalid_argument("File cannot be found!");
 	}
 	catch (const std::invalid_argument& e) {
-		std::cerr << "exception: " << e.what() << std::endl;
+		std::cerr << "Error: " << e.what() << std::endl;
 		std::cerr << "Try again with another file." << std::endl;
 		std::exit(-1);
 	}
 	// ha nem nyílik meg a fájl, hibakezelés - jelenleg leáll a program, ha ebbe ütközik
 }
 
-// nincs használva
-//unsigned Matrix::getRows() const {
-//	return rows;
-//}
+Matrix::Matrix(const Vector& left, const Vector& right)	// diadikus szorzat, két vektorból mátrixot hoz létre
+{
+	try {
+		if (left.getSize() != right.getSize())
+			throw std::domain_error("Vectors can't be multiplied, size mismatch!");	// eltérõ méretû vektorok
+	}
+	catch (std::domain_error& e) {
+		std::cerr << "Error: " << e.what() << std::endl;
+		std::exit(-1);
+	}
+	setSize(left.getSize(), left.getSize());
+	for (unsigned i = 0; i < left.getSize(); i++)
+		for (unsigned j = 0; j < left.getSize(); j++)
+			(*this)(i, j) = left(i) * right(j);
+}
 
-// nincs használva
-//unsigned Matrix::getColumns() const {
-//	return columns;
-//}
+unsigned Matrix::getRows() const {
+	return rows;
+}
+
+unsigned Matrix::getColumns() const {
+	return columns;
+}
 
 unsigned Matrix::getSize() const {
-	return columns * rows;
+	return getColumns() * getRows();
 }
 
 void Matrix::setSize(unsigned rows, unsigned columns) {
@@ -64,22 +96,40 @@ void Matrix::setSize(unsigned rows, unsigned columns) {
 }
 
 double Matrix::operator()(unsigned row, unsigned column) const {
-	if (row > rows - 1 || column > columns - 1)
-		throw std::out_of_range("Too great index!");
+	try {
+		if (row > rows - 1 || column > columns - 1)
+			throw std::out_of_range("Too great index!"); // indexelési hiba
+	}
+	catch (std::out_of_range& e) {
+		std::cerr << "Error: " << e.what() << std::endl;
+		std::exit(-1);
+	}
 	return data.at(row * columns + column);
 }
 
 double& Matrix::operator()(unsigned row, unsigned column) {
-	if (row > rows - 1 || column > columns - 1)
-		throw std::out_of_range("Too great index!");
+	try {
+		if (row > rows - 1 || column > columns - 1)
+			throw std::out_of_range("Too great index!"); // indexelési hiba
+	}
+	catch (std::out_of_range& e) {
+		std::cerr << "Error: " << e.what() << std::endl;
+		std::exit(-1);
+	}
 	return data.at(row * columns + column);
 }
 
 Matrix Matrix::operator+(const Matrix& other) const
 {
 	Matrix result;
-	if (this->rows != other.rows || this->columns != other.columns)
-		throw std::domain_error("Differently sized matrices can't be added to each other!");
+	try {
+		if (this->rows != other.rows || this->columns != other.columns)
+			throw std::domain_error("Differently sized matrices can't be added to each other!"); // eltérõ méretû mátrixok
+	}
+	catch (std::domain_error& e) {
+		std::cerr << "Error: " << e.what() << std::endl;
+		std::exit(-1);
+	}
 	result.setSize(rows, columns);
 	for (unsigned i = 0; i < rows; i++)
 	{
@@ -92,8 +142,14 @@ Matrix Matrix::operator+(const Matrix& other) const
 Matrix Matrix::operator-(const Matrix& other) const
 {
 	Matrix result;
-	if (this->rows != other.rows || this->columns != other.columns)
-		throw std::domain_error("Differently sized matrices can't be substracted from each other!");
+	try {
+		if (this->rows != other.rows || this->columns != other.columns)
+			throw std::domain_error("Differently sized matrices can't be added to each other!"); // eltérõ méretû mátrixok
+	}
+	catch (std::domain_error& e) {
+		std::cerr << "Error: " << e.what() << std::endl;
+		std::exit(-1);
+	}
 	result.setSize(rows, columns);
 	for (unsigned i = 0; i < rows; i++)
 	{
@@ -105,8 +161,14 @@ Matrix Matrix::operator-(const Matrix& other) const
 
 Matrix Matrix::operator*(const Matrix& other) const
 {
-	if (this->columns != other.rows)
-		throw std::domain_error("Matrices can't be multiplied due to column - row size mismatch!");
+	try {
+		if (this->columns != other.rows)
+			throw std::domain_error("Matrices can't be multiplied due to column - row size mismatch!"); // hibás méretû mátrixok, nincs oszlop-sor egyezés
+	}
+	catch (std::domain_error& e) {
+		std::cerr << "Error: " << e.what() << std::endl;
+		std::exit(-1);
+	}
 	Matrix result;
 	result.setSize(this->rows, other.columns);
 	for (unsigned i = 0; i < this->rows; i++) {
@@ -122,8 +184,14 @@ Matrix Matrix::operator*(const Matrix& other) const
 
 Vector Matrix::operator*(const Vector& other) const
 {
-	if (this->columns != other.getSize())
-		throw std::domain_error("Matrix and vector can't be multiplied due to column - row size mismatch!");
+	try {
+		if (this->columns != other.getSize())
+			throw std::domain_error("Matrix and vector can't be multiplied due to column - row size mismatch!"); // hibás méretû mátrixok, nincs oszlop-sor egyezés
+	}
+	catch (std::domain_error& e) {
+		std::cerr << "Error: " << e.what() << std::endl;
+		std::exit(-1);
+	}
 	Vector result;
 	result.setSize(rows);
 	result.fill(0);
@@ -134,14 +202,14 @@ Vector Matrix::operator*(const Vector& other) const
 		
 }
 
-Matrix Matrix::operator*(double times) const
+Matrix Matrix::operator*(double times) const 
 {
 	Matrix result;
 	result.setSize(rows, columns);
 	for (unsigned i = 0; i < rows; i++)
 	{
 		for (unsigned j = 0; j < columns; j++)
-			result(i, j) = (*this)(i, j) * times;
+			result(i, j) = (*this)(i, j) * times; // minden elemét szorozzuk
 	}
 	return result;
 }
@@ -161,21 +229,6 @@ void Matrix::transpose()														// transzponálás
 		for (unsigned j = 0; j < columns; j++)
 			tmp(j, i) = (*this)(i, j);
 	*this = tmp;
-}
-
-void Matrix::pushVector(const Vector& other)									// oszlopvektor beillesztése mátrix elejébe 
-{
-	if (rows == 0 && columns == 0)
-		(*this).setSize(other.getSize(), 0);
-	if (rows != other.getSize() )
-		throw std::domain_error("Vector can't be put into matrix, row size mismatch!");
-	Matrix temp(rows, columns + 1);
-	for (unsigned i = 0; i < rows; i++) {
-		for (unsigned j = 0; j < columns; j++)
-			temp(i, j) = (*this)(i, j);
-		temp(i, columns) = other(i);
-	}
-	(*this) = temp;
 }
 
 void Matrix::print() const {													// diagnosztikai jellegû kiírás
@@ -201,8 +254,14 @@ void Matrix::makeIdentity(unsigned size) {										// identitásmátrixxá alakítá
 }
 
 Vector Matrix::extractColumn(unsigned columnindex) const {						// adott indexû oszlopvektor kiemelése mátrixból
-	if (columnindex > columns - 1)
-		throw std::out_of_range("Too great index!");
+	try {
+		if (columnindex > columns - 1)
+			throw std::out_of_range("Too great index!");		// indexelési hiba
+	}
+	catch (std::out_of_range& e) {
+		std::cerr << "Error: " << e.what() << std::endl;
+		std::exit(-1);
+	}
 	Vector result;
 	result.setSize(rows);
 	for (unsigned i = 0; i < rows; i++)
@@ -210,13 +269,6 @@ Vector Matrix::extractColumn(unsigned columnindex) const {						// adott indexû 
 	return result;
 }
 
-void Matrix::outerProduct(const Vector& other) {								// két vektor diadikus szorzata
-	Matrix vToTranspose;														// A=v*v^T
-	vToTranspose.pushVector(other);												// ha v vektor n sorú, akkor A egy n*n-es mátrix lesz
-	Matrix v = vToTranspose;
-	vToTranspose.transpose();
-	(*this) = v * vToTranspose;
-}
 
 
 Matrix Matrix::HouseholderOrthogonalize() const {
@@ -234,8 +286,7 @@ Matrix Matrix::HouseholderOrthogonalize() const {
 		I.makeIdentity(rows - iter);											//x hosszának megfelelõ egységmátrix
 		Matrix Q;
 		Q.setSize(rows - iter);													//Q is legyen ekkora
-		Matrix dyad;
-		dyad.outerProduct(u);													// diadikus szorzat
+		Matrix dyad(u, u);														// diadikus szorzat
 		Q = I - dyad * 2;														//Q = I - v * v^T * 2; Householder tükrözés
 
 		Matrix identityQ;
@@ -264,8 +315,14 @@ Matrix Matrix::HouseholderOrthogonalize() const {
 }
 
 Matrix Matrix::makeLeastSquaresMatrix(std::vector<unsigned> function) const {
-	if (columns != 2)
-		throw std::logic_error("Matrix not usable for 2D coordinates, it doesn't have 2 columns exactly!");
+	try {
+		if (columns != 2)
+			throw std::logic_error("Matrix not usable for 2D coordinates, it doesn't have 2 columns exactly!");
+	}
+	catch (std::logic_error& e) {
+		std::cerr << "Error: " << e.what() << std::endl;
+		std::exit(-1);
+	}
 	Matrix result;
 	result.setSize(rows, function.size());											// a megadott polinom fokszámoknak megfelelõ mátrixot hoz létre,
 	for (unsigned i = 0; i < result.rows; i++)										// melyen végrehajtható a legkisebb négyzetek módszerével történõ megoldás
@@ -276,11 +333,25 @@ Matrix Matrix::makeLeastSquaresMatrix(std::vector<unsigned> function) const {
 }
 
 Vector Matrix::SolveUpperTriangle(const Vector& other) const {
-	if (columns > rows)
-		throw std::runtime_error("Not enough coordinates to accurately calculate coefficients, the algorithm need at least [greatest exponent]+1 coordinates!");
-	for (unsigned i = 0; i < columns; i++)
-		if (abs((*this)(i, i)) < 0.000000001) // epsilonos közelítés, mert == 0 nem szabad double-el
-			throw std::domain_error("Equation system with infinite solutions!");
+	try {
+		if (columns > rows)
+			throw std::runtime_error("Not enough coordinates to accurately calculate coefficients, the algorithm need at least [greatest exponent]+1 coordinates!");		// nem elég koordináta hibát okoz
+	}
+	catch (std::runtime_error& e) {
+		std::cerr << "Error: " << e.what() << std::endl;
+		std::cerr << "Try again with more coordinates in the file!" << std::endl;
+		std::exit(-1);
+	}
+	try {
+		for (unsigned i = 0; i < columns; i++)
+			if (abs((*this)(i, i)) < 0.000000001) // epsilonos közelítés, mert == 0 nem szabad double-el
+				throw std::domain_error("Equation system with infinite solutions!");
+	}
+	catch (std::domain_error& e) {
+		std::cerr << "Error: " << e.what() << std::endl;
+		std::cerr << "Algorithm unable to fit polynomial." << std::endl;
+		std::exit(-1);
+	}
 	Matrix Rsquare(columns, columns);	// alsó nullákat tartalmazó rész nélküli négyzetes mátrix
 	Vector v(columns);
 	for (unsigned i = 0; i < columns; i++) {
@@ -297,30 +368,25 @@ Vector Matrix::SolveUpperTriangle(const Vector& other) const {
 		result(i) = v(i);															// ax1+bx2+cx3 = d
 		for (int j = columns - 1; j > i; j--) {										//     ex2+fx3 = g
 			result(i) -= Rsquare(i, j) * result(j);									//         hx3 = i
-			result.print();															// tehát x3=i/h, x2=(g-f*i/h)/e....stb.
+																					// tehát x3=i/h, x2=(g-f*i/h)/e....stb.
 		}
 		result(i) /= Rsquare(i, i);
-		result.print();
 	}
-	result.print();
 	return result;
 }
 
 Vector Matrix::SolveLeastSquaresProblem(std::vector<unsigned> function) const {
-	Matrix A = (*this).makeLeastSquaresMatrix(function);
-	Matrix Q = A.HouseholderOrthogonalize();
+	Matrix A = (*this).makeLeastSquaresMatrix(function);							// Q*R = A
+	Matrix Q = A.HouseholderOrthogonalize();										// Q ortogonalizált mátrix
 	Matrix QT = Q;
 	QT.transpose();
-	QT.print();
-	Matrix R = QT * A;
-	R.print();
+	Matrix R = QT * A;																// R felsõ háromszög mátrix
 	Vector b = (*this).extractColumn(1);
 	for (unsigned i = 0; i < R.rows; i++)
 		for (unsigned j = 0; j < R.columns; j++)
 			if (i > j)
 				R(i, j) = 0;
-	R.print();
-	Vector y = QT * b;
-	Vector result = R.SolveUpperTriangle(y);
-	return result;
-}
+	Vector y = QT * b;																// A*x=b
+	Vector result = R.SolveUpperTriangle(y);										// Q*R*x=b
+	return result;																	// R*x=y -> y=Q^(-1)*b
+}																					// x = R^(-1)*y

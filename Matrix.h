@@ -25,10 +25,14 @@ public:
 	/// \brief Koordináta mátrixot konstruál egy fájlban található értékek alapján
 	/// @param fName: fájl neve
 	/// 
-	Matrix(const std::string& fName);
+	Matrix(const char* fName);
 
-	//unsigned getRows() const; // pár helyen használhatnám ezt is, csak nem kötelezõ - változtatok majd ezen
-	//unsigned getColumns() const;
+	/// \brief Diadikus szorzat, két vektorból hoz létre mátrixot
+	/// @param left: bal oldali oszlopvektor
+	/// @param right: jobb oldali sorvektor
+	Matrix(const Vector& left, const Vector& right);
+	unsigned getRows() const; // pár helyen használhatnám ezt is, csak nem kötelezõ - változtatok majd ezen
+	unsigned getColumns() const;
 	/// \brief Visszaadja a mátrix méretét (sor*oszlop)
 	/// 
 	/// @returns unsigned: mátrix mérete
@@ -42,10 +46,7 @@ public:
 	/// @param columms: oszlopok száma
 	/// 
 	void setSize(unsigned rows=0, unsigned columns=0);
-	/// \brief Vektor beillesztése mátrixba (0. oszlop helyére)
-	/// @param other: beillesztendõ mátrix
-	/// 
-	void pushVector(const Vector& other);
+
 	/// \brief Oszlopvektor készítése a mátrix adott indexû oszlopából
 	/// @param columnindex: oszlop indexe
 	/// @returns Vector: kiemelt oszlopvektor (másolat, mátrix nem rongálódik)
@@ -88,10 +89,7 @@ public:
 	/// @param other: másolandó objektum
 	/// @returns Matrix&: referenciát ad vissza arra a módosított objektumra, amelyen a tagfüggvény meg lett hívva 
 	Matrix& operator=(const Matrix& other);
-	/// \brief Diadikus szorzat: sorvektor és oszlopvektor szorzata, a sorvektor egy három oszlopos, egy soros mátrix
-	/// @param other: oszlopvektor
-	/// @returns Matrix&: módosított három oszlopos, három soros mátrix, mely a "sorvektor"-ból jött létre						// lehet inkább kettõ paramétert evõ mátrix konstruktorrá teszem, az egészségesebbnek tûnik, ezzel a pusvector is elvesztené értelmét
-	void outerProduct(const Vector& other);
+
 	/// \brief Transzponálás: mátrix tükrözése a fõtengelyre
 	/// 
 	/// 

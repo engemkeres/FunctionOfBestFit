@@ -2,41 +2,61 @@
 #include <string>
 #include "Matrix.h"
 
-std::vector<unsigned> storeExponents(const std::vector<std::string>& arguments) {
-	for(int i=2; i<arguments.size();i++)
-		for(unsigned j=0;i<arguments.at(i).size();j++)
-			if((arguments.at(i)).at(j) < '0' || (arguments.at(i)).at(j) > '9')
-				throw std::runtime_error("Faulty arguments, exponents must be non-negative, whole numbers!");
-	std::vector<unsigned> function;
-	for (int i = 2; i < arguments.size(); i++) {
-		function.push_back( (unsigned)std::stoi( arguments.at(i) ) );
+/// \brief fokszámok eltárolása adatvektorba, csak egész, nem negatív kitevõk érvényesek
+/// @param argc: parancssori argumentumok száma (0: program neve, 1: adatfájl neve, 2...n: fokszámok
+/// @param argv: parancssoron érkezett stringekre mutató pointerek tömbje
+/// @returns std::vector: fokszámok tömbje
+std::vector<unsigned> storeExponents(int argc, char* argv[]) { 
+	try {
+		if (argc < 3)
+			throw std::invalid_argument("You must enter at least 1 non-negative, whole number as exponent!");
+		for (int i = 2; i < argc; i++)
+			for (int j = 0; j < strlen(argv[i]); j++)
+				if ((argv[i])[j] < '0' || (argv[i])[j] > '9')
+					throw std::invalid_argument("You must enter non-negative, whole numbers as exponent!");
 	}
+	catch (std::invalid_argument& e) {
+		std::cerr << "Error: " << e.what() << std::endl;
+		std::exit(-1);
+	}
+	//unsigned
+	std::vector<unsigned> function;
+	for (int i = 2; i < argc; i++)
+		function.push_back((unsigned)std::stoi(argv[i]));
 	return function;
 }
 
-std::vector<std::string> argsToString(int argc,const char* const argv[]) {
-	std::vector<std::string> arguments; 
-	for (int i = 0; i < argc; i++)
-		arguments.push_back(argv[i]);
-	return arguments;
+void welcome() {
+	std::cout <<	"Welcome!\nTo get started, launch the program the following way:\n"
+					"Type in the name of the program (FunctionOfBestFit) followed by your coordinate-file's name,\n "
+					"then list the exponents of the polinom you want to fit to the dataset separated by spaces.\n"
+					"The file must be .txt format, filled the following way:\n"
+					"x y\nx y\nx y and so on...\n"
+					"The file musn't contain empty lines or other characters.\n"
+					"The listed exponents must be whole, non-negative numbers."<< std::endl;
 }
 
-// hibás user inputra számítani kell, ezért mégse exceptionként kéne kezelni
+/// \brief Fõfüggvény, csak az algoritmus elindítására. Eltárolja a fokszámokat, meghívja a kiszámoló függvényt, majd kiírja az eredményt
+/// 
+/// @param argc: parancssori argumentumok száma (0: program neve, 1: adatfájl neve, 2...n: fokszámok
+/// @param argv: parancssoron érkezett stringekre mutató pointerek tömbje
+/// 
 int main(int argc, char* argv[]) {
-	std::vector<unsigned> function;
-	std::vector<std::string> arguments = argsToString(argc, argv);
-	if (arguments.size() < 3) {
-		std::cout << "Try again with at least two whole, non negative numbers!\nIf you don't want to try again, just press enter." << std::endl;//recovery - új argumentumok esetleges hozzáadás/kicserélése
-		std::string temp;
-		if (std::cin.peek() != '\n') {
-			std::cin >> temp;
-			function.push_back(std::stoi(temp)); // hibakezelés, ha nem számokat kapott
-		}
+	if (argc < 2)
+		welcome();
+	std::vector<unsigned> function;		// fokszámokat tároló adatvektor
+	// el is kéne kapni azokat az exceptionöket - de újra felállás hibás fájl után: nem egyértelmû,
+	// hogy jogos-e az exceptionös/nem exceptionös megvalósítás, ezért inkább hagyom:
+	// hiba, próbálkozz újra, refer to help command stb.
+	try {
+		function = storeExponents(argc, argv);
+		Matrix mat(argv[1]);
+		Vector resultCoefficients = mat.SolveLeastSquaresProblem(function);
+		resultCoefficients.printEquation(function);
 	}
-	function = storeExponents(arguments);
-	Matrix mat(arguments.at(1));	// nem jó fájl hibakezelés: 1. argumentum kicserélése a megadottra
-	Vector resultCoefficients = mat.SolveLeastSquaresProblem(function);
-	resultCoefficients.printEquation(function);
+	catch (...) {
+		std::cerr << "Unexpected error, terminating program" << std::endl;
+		std::exit(-1);
+	}
 	return 0;
 }
-
