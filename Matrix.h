@@ -9,9 +9,12 @@
 class Matrix
 {
 private:
+	/// \brief sorok száma
 	unsigned rows;
+	/// \brief oszlopok száma
 	unsigned columns;
-	std::vector<double> data;		// STL tároló
+	/// \brief STL tároló
+	std::vector<double> data;
 public:
 	/// \brief Mátrix objektum konstruktor
 	/// @param rows: sorok száma
@@ -26,7 +29,8 @@ public:
 	/// @param fName: fájl neve
 	/// 
 	Matrix(const char* fName);
-
+	/// \brief dekstruktor
+	~Matrix() {}
 	/// \brief Diadikus szorzat, két vektorból hoz létre mátrixot
 	/// @param left: bal oldali oszlopvektor
 	/// @param right: jobb oldali sorvektor
@@ -94,7 +98,7 @@ public:
 	/// 
 	/// 
 	void transpose();	
-	/// \brief Legykisebb négyzetek módszeréhez hoz létre mátrixot
+	/// \brief Legkisebb négyzetek módszeréhez hoz létre mátrixot
 	/// @param function: fokszámokat tartalmazó adatvektor
 	/// @returns Matrix: adott sorban az eredeti mátrix x koordinátája szerepel megfelelõ fokszámokon
 	Matrix makeLeastSquaresMatrix(std::vector<double> function) const;

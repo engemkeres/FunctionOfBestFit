@@ -10,7 +10,7 @@ Matrix::Matrix(const Matrix& other) {
 }
 
 Matrix::Matrix(const char* fName) : rows(0), columns(2)
-{											// TODO hibakezelés, mely új lehetõséget biztosít másik fájl, másik fokszám megadadására, és nem egybõl kilép a program
+{									
 	std::ifstream inputFile;
 	try {
 		inputFile.open(fName);
@@ -31,24 +31,8 @@ Matrix::Matrix(const char* fName) : rows(0), columns(2)
 				rows++;
 				if (inputFile.eof())
 					break;
-
-
-				//std::cin >> std::ws;
-				//inputFile >> temp;
-				//if (std::cin.fail())
-				//	throw std::invalid_argument("File has non-numeric characters, not usable!");
-				//data.push_back(temp);
-				//if (inputFile.eof())
-				//	break;
-				//inputFile >> temp;
-				//data.push_back(temp);
-				//rows++;
-				//if (inputFile.eof())
-				//	break;
 			}
 			inputFile.close();
-			//if(data.size()%2!=0)
-			//	throw std::invalid_argument("Odd amount of numbers, can't produce coordinates, unusable file!"); // elrontottam, meg kell javítani
 		}
 		else
 			throw std::invalid_argument("File cannot be found!");
@@ -58,7 +42,6 @@ Matrix::Matrix(const char* fName) : rows(0), columns(2)
 		std::cerr << "Try again with another file." << std::endl;
 		std::exit(-1);
 	}
-	// ha nem nyílik meg a fájl, hibakezelés - jelenleg leáll a program, ha ebbe ütközik
 }
 
 Matrix::Matrix(const Vector& left, const Vector& right)	// diadikus szorzat, két vektorból mátrixot hoz létre
@@ -256,7 +239,7 @@ void Matrix::makeIdentity(unsigned size) {										// identitásmátrixxá alakítá
 Vector Matrix::extractColumn(unsigned columnindex) const {						// adott indexû oszlopvektor kiemelése mátrixból
 	try {
 		if (columnindex > columns - 1)
-			throw std::out_of_range("Too great index!");		// indexelési hiba
+			throw std::out_of_range("Too great index!");						// indexelési hiba
 	}
 	catch (std::out_of_range& e) {
 		std::cerr << "Error: " << e.what() << std::endl;

@@ -3,12 +3,14 @@
 #include <vector>
 #include <math.h>
 
-/// \brief Matematikai vektor osztály, lineális algebrát alkalmazó metódusok elvégzésére
+/// \brief Matematikai vektor osztály, lineális algebrát alkalmazó metódusok elvégzésére. Csak az algoritmus végrehatjtásához szükséges aritmetikával rendelkezik: (nincs skaláris szorzat, vektoriális szorzat, de van didadikus szorzat)
 /// 
 class Vector
 {
 private:
+	/// \brief sorok száma
 	unsigned size;
+	/// \brief STL tároló
 	std::vector<double> data;
 public:
 	/// \brief Vector objektum konstruktor
@@ -17,7 +19,9 @@ public:
 	/// \brief Vector objektum másoló konstruktor
 	/// @param other: lemásolandó objektum
 	Vector(const Vector& other);
-
+	/// \brief Vector destruktor
+	///
+	~Vector() {}
 	/// \brief Vektor méretét adja vissza
 	/// 
 	/// @returns unsigned: vektor mérete

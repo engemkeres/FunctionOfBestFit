@@ -18,7 +18,8 @@ std::vector<double> storeExponents(int argc, char* argv[]) {
 	}
 	try {
 		for (int i = 2; i < argc; i++)
-			function.push_back((double)std::stod(argv[i]));
+			function.push_back((double)std::stod(argv[i]));		// ha az stod hibát dob, mivel nem alakítható számmá a string tartalma,
+																// akkor ezt a hibát külön elkapom, hogy ne a saját hibaüzenetét irassam ki a felhasználónak
 	}
 	catch (std::invalid_argument& e) {
 		std::cerr << "Error: invalid exponents, all exponents must be numbers, separated only by spaces!";
@@ -29,7 +30,7 @@ std::vector<double> storeExponents(int argc, char* argv[]) {
 
 void welcome() {
 	std::cout <<	"Welcome!\nTo get started, launch the program the following way:\n"
-					"Type in the name of the program (FunctionOfBestFit) followed by your coordinate-file's name,\n "
+					"Type in the name of the program (FunctionOfBestFit) followed by your coordinate-file's name,\n"
 					"then list the exponents of the polinom you want to fit to the dataset separated by spaces.\n"
 					"The file must be .txt format, filled the following way:\n"
 					"x y\nx y\nx y and so on...\n"
@@ -46,13 +47,10 @@ int main(int argc, char* argv[]) {
 	if (argc < 2)
 		welcome();
 	std::vector<double> function;		// fokszámokat tároló adatvektor
-	// el is kéne kapni azokat az exceptionöket - de újra felállás hibás fájl után: nem egyértelmû,
-	// hogy jogos-e az exceptionös/nem exceptionös megvalósítás, ezért inkább hagyom:
-	// hiba, próbálkozz újra, refer to help command stb.
 	try {
-		function = storeExponents(argc, argv);
-		Matrix mat(argv[1]);
-		Vector resultCoefficients = mat.SolveLeastSquaresProblem(function);
+		function = storeExponents(argc, argv);									// parancssoron érkezett kitevõk eltárolása
+		Matrix mat(argv[1]);													// 2D koordinátamátrix beolvasása fájlból
+		Vector resultCoefficients = mat.SolveLeastSquaresProblem(function);		// illesztendõ függvény együtthatóinak kiszámolása
 		resultCoefficients.printEquation(function);
 	}
 	catch (...) {

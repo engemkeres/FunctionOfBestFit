@@ -61,19 +61,15 @@ void Vector::print() const
 void Vector::printEquation(std::vector<double> function) const // ide is kell epsilonos becslés, mert nem lehet 0 a kitevõ igazán
 {
 	typedef std::numeric_limits< double > dbl;
-	std::cout.precision(dbl::max_digits10);
+	/*std::cout.precision(dbl::max_digits10);*/
 	std::cout << "y = ";
-	for (unsigned i = 0; i < function.size(); i++) {
-		if (function.at(i)==0)
+	for (unsigned i = 0; i < function.size(); i++)
+		if (abs(function.at(i)) < 0.000000001) // epsilonos közelítés, mert == 0 nem szabad double-el
 			std::cout << (*this)(i);
 		else {
 			std::cout << ((*this)(i) < 0 ? " - " : " + ");	// csak az elsõ együttható elé nem kell +/--t tenni
-			if (function.at(i) == 1)
-				std::cout << ((*this)(i) < 0 ? (-1) * (*this)(i) : (*this)(i)) << "x"; // x^1 helyett csak x
-			else
-				std::cout << ( (*this)(i) < 0 ? (-1)*(*this)(i) : (*this)(i) )<< "x^" << function.at(i); 
+			std::cout << ((*this)(i) < 0 ? (-1) * (*this)(i) : (*this)(i)) << "x^" << function.at(i);
 		}
-	}
 	std::cout << std::endl;
 }
 
