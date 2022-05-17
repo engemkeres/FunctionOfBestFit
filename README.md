@@ -1,14 +1,14 @@
-# Polinom illesztés ponthalmazra
+# Függvény illesztés ponthalmazra
 A programozás alapja 2. házi feladat - Baki Bence István [BOIR4K]
 ## Informális házi feladat leírás
 Mérnöki problémamegoldás során gyakran ütközik az ember mérés után feldolgozandó adathalmazba, melyre a legjobban illeszkedő függvényt keressük. Ahelyett, hogy keresnénk az interneten egy az igényeinknek 95%-ban megfelelő szolgáltatást 30 másodperc alatt, az egyszeri mérnök-hallgató megpróbál inkább saját programot írni rá 2 hét alatt, ami a maradék 5% igényt is megvalósítja (kézi szövegdobozba gépelés helyett .csv/.txt fájl feldolgozás).
 ## Formális házi feladat leírás
 ### Az elkészítendő szoftver célja
-A program célja, hogy az annak megadott, síkbeli pontok koordinátáit tartalmazó adathalmazt (.txt) és egy parancssoron keresztül biztosított polinom fokszám tömböt feldolgozzon, és megadja az adathalmazra legjobban illeszkedő függvényt, mely a megadott fokszámú tagokkal rendelkezik.
+A program célja, hogy az annak megadott, síkbeli pontok koordinátáit tartalmazó adathalmazt (.txt) és egy parancssoron keresztül biztosított racionális kitevős hatványfüggvény fokszám tömböt feldolgozzon, és megadja az adathalmazra legjobban illeszkedő függvényt, mely a megadott fokszámú tagokkal rendelkezik.
 ### Elvárások
-A program parancssori argumentumként megkapja a feldolgozandó fájl nevét, melyben az egyes síkbeli koordináták szóközökkel elválasztva szerepelnek a következő formátumban: x1 y1 x2 y2… Megkapja emellett parancssoron az illeszteni kívánt függvény fokszámait is (pl. >> teszt.txt 0 1 3 4 - > y=a+bx+cx3+dx4 alakú függvényt illeszt a teszt.txt fájlban található ponthalmazra).
+A program parancssori argumentumként megkapja a feldolgozandó fájl nevét, melyben az egyes síkbeli koordináták szóközökkel elválasztva szerepelnek a következő formátumban: x1 y1 x2 y2… Megkapja emellett parancssoron az illeszteni kívánt függvény fokszámait is (pl. >> teszt.txt 0 0.5 3.14 4 - > y=a+bx^0.5+cx^3.14+dx^4 alakú függvényt illeszt a teszt.txt fájlban található ponthalmazra).
 
-A parancssorra kiírja a program a kiválasztott fokszámokkal rendelkező polinomot, mely a legjobban illeszkedik a ponthalmazra, y=a+bx^n+cx^k+… formában.
+A parancssorra kiírja a program a kiválasztott fokszámokkal rendelkező hatványfüggvényt, mely a legjobban illeszkedik a ponthalmazra, y=a+bx^n+cx^k+… formában.
 ### Implementálandó funkciók
 *	Mátrix és Vektor osztály működő aritmetikával (összeadás, szorzás, transzponálás)
 *	Mátrix QR felbontás képzése Householder transzformációval
@@ -17,7 +17,7 @@ A parancssorra kiírja a program a kiválasztott fokszámokkal rendelkező polin
 
 
 ### Felhasználói interakció
-A felhasználó az adathalmazt tartalmazó fájl címét és a kívánt illesztendő polinom típust parancssori argumentumként adja meg, ezekkel kapcsolatban hibás megadás esetén a program jelez (hibás polinom fokszám, nem létezik a fájl stb.)
+A felhasználó az adathalmazt tartalmazó fájl címét és a kívánt illesztendő hatványfüggvény típust parancssori argumentumként adja meg, ezekkel kapcsolatban hibás megadás esetén a program jelez (nem értelmezhető fokszám (pl.: kenyér), nem létezik a fájl stb.)
 
 ### Követelmények
 **Futtató környezet követelményei**
