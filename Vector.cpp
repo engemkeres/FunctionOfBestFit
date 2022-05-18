@@ -67,7 +67,8 @@ void Vector::printEquation(std::vector<double> function) const // ide is kell ep
 		if (abs(function.at(i)) < 0.000000001) // epsilonos közelítés, mert == 0 nem szabad double-el
 			std::cout << (*this)(i);
 		else {
-			std::cout << ((*this)(i) < 0 ? " - " : " + ");	// csak az elsõ együttható elé nem kell +/--t tenni
+			if(function.size()!=1)
+				std::cout << ((*this)(i) < 0 ? " - " : " + ");	// csak az elsõ együttható elé nem kell +/--t tenni
 			std::cout << ((*this)(i) < 0 ? (-1) * (*this)(i) : (*this)(i)) << "x^" << function.at(i);
 		}
 	std::cout << std::endl;

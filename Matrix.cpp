@@ -301,18 +301,22 @@ Matrix Matrix::makeLeastSquaresMatrix(std::vector<double> function) const {
 	try {
 		if (columns != 2)
 			throw std::logic_error("Matrix not usable for 2D coordinates, it doesn't have 2 columns exactly!");
+
+
+		Matrix result;
+		result.setSize(rows, function.size());											// a megadott polinom fokszámoknak megfelelõ mátrixot hoz létre,
+		for (unsigned i = 0; i < result.rows; i++)										// melyen végrehajtható a legkisebb négyzetek módszerével történõ megoldás
+			for (unsigned j = 0; j < result.columns; j++) {
+				if ((*this)(i, 0) < 0 && abs(function.at(j) - (int)round(function.at(j))) > 0.000000001)
+					throw std::logic_error("Negative number with rational exponent can't always be calculated!");
+				result(i, j) = pow((*this)(i, 0), function.at(j));						// a mátrix egyes soraiba az adott pont x koordinátái kerülnek megadott fokszámokon: 
+			}																			// pl: (3,5) pont, y=a+bx+cx^2 polinom: 1 3 9 a hozzá tartozó sorban 
+		return result;
 	}
 	catch (std::logic_error& e) {
 		std::cerr << "Error: " << e.what() << std::endl;
 		std::exit(-1);
 	}
-	Matrix result;
-	result.setSize(rows, function.size());											// a megadott polinom fokszámoknak megfelelõ mátrixot hoz létre,
-	for (unsigned i = 0; i < result.rows; i++)										// melyen végrehajtható a legkisebb négyzetek módszerével történõ megoldás
-		for (unsigned j = 0; j < result.columns; j++)				
-			result(i, j) = pow((*this)(i, 0), function.at(j));						// a mátrix egyes soraiba az adott pont x koordinátái kerülnek megadott fokszámokon: 
-																					// pl: (3,5) pont, y=a+bx+cx^2 polinom: 1 3 9 a hozzá tartozó sorban 
-	return result;
 }
 
 Vector Matrix::SolveUpperTriangle(const Vector& other) const {

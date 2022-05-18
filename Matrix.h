@@ -28,7 +28,7 @@ public:
 	/// \brief Koordináta mátrixot konstruál egy fájlban található értékek alapján
 	/// @param fName: fájl neve
 	/// 
-	Matrix(const char* fName);
+	explicit Matrix(const char* fName);
 	/// \brief dekstruktor
 	~Matrix() {}
 	/// \brief Diadikus szorzat, két vektorból hoz létre mátrixot
